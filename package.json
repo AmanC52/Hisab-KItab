@@ -1,0 +1,14 @@
+{
+  "name": "hisab-kitab",
+  "version": "1.0.0",
+  "description": "Hisab Kitab - Offline Daily Ledger App",
+  "main": "index.html",
+  "scripts": {
+    "sync": "node -e \"const fs=require('fs'); fs.copyFileSync('index.html','www/index.html');\" && npx cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  }
+}

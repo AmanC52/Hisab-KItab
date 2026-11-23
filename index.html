@@ -1,0 +1,2827 @@
+<!DOCTYPE html>
+<html lang="hi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hisab Kitab (हिसाब किताब) - Offline Daily Ledger</title>
+  <style>
+    /* ==========================================================================
+       CSS Variables & Theme Definitions (Light & Dark Mode)
+       ========================================================================== */
+    :root {
+      --bg-page: #f4f6f9;
+      --bg-card: #ffffff;
+      --bg-input: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --border-color: #e2e8f0;
+      --border-focus: #3b82f6;
+
+      /* Credit / Green colors (I received / I owe) */
+      --green-main: #16a34a;
+      --green-bg: #ecfdf5;
+      --green-border: #a7f3d0;
+      --green-text: #065f46;
+
+      /* Debit / Red colors (They took / They owe) */
+      --red-main: #dc2626;
+      --red-bg: #fef2f2;
+      --red-border: #fecaca;
+      --red-text: #991b1b;
+
+      /* Neutral / Blue / Accents */
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --primary-bg: #eff6ff;
+      --primary-text: #1e40af;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    [data-theme="dark"] {
+      --bg-page: #0f172a;
+      --bg-card: #1e293b;
+      --bg-input: #334155;
+      --bg-card-hover: #243248;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+      --border-color: #334155;
+      --border-focus: #60a5fa;
+
+      --green-main: #22c55e;
+      --green-bg: #064e3b33;
+      --green-border: #065f46;
+      --green-text: #4ade80;
+
+      --red-main: #ef4444;
+      --red-bg: #7f1d1d33;
+      --red-border: #991b1b;
+      --red-text: #f87171;
+
+      --primary: #3b82f6;
+      --primary-hover: #60a5fa;
+      --primary-bg: #1e3a8a44;
+      --primary-text: #93c5fd;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 8px rgba(0,0,0,0.4);
+      --shadow-lg: 0 12px 20px rgba(0,0,0,0.5);
+    }
+
+    /* ==========================================================================
+       Base & Reset Styles
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+    }
+
+    /* ==========================================================================
+       Layout Containers
+       ========================================================================== */
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 16px 20px;
+      width: 100%;
+    }
+
+    /* App Header */
+    .app-header {
+      background-color: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+    }
+
+    .brand-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .brand-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 16px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.92rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.85rem;
+    }
+
+    .btn-lg {
+      padding: 12px 22px;
+      font-size: 1rem;
+      border-radius: var(--radius);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: #ffffff;
+    }
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover {
+      background-color: var(--bg-card-hover);
+      border-color: var(--text-muted);
+    }
+
+    .btn-green {
+      background-color: var(--green-main);
+      color: #ffffff;
+    }
+    .btn-green:hover {
+      opacity: 0.92;
+    }
+
+    .btn-red {
+      background-color: var(--red-main);
+      color: #ffffff;
+    }
+    .btn-red:hover {
+      opacity: 0.92;
+    }
+
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-icon:hover {
+      background-color: var(--bg-card-hover);
+      color: var(--primary);
+    }
+
+    /* Sample Data Notice Banner */
+    .sample-banner {
+      background-color: #fef3c7;
+      border-bottom: 1px solid #fde68a;
+      color: #92400e;
+      padding: 10px 20px;
+      font-size: 0.88rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    [data-theme="dark"] .sample-banner {
+      background-color: #78350f33;
+      border-bottom-color: #78350f;
+      color: #fde68a;
+    }
+
+    /* Top Dashboard Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+    }
+
+    .stat-card.stat-green::before { background-color: var(--green-main); }
+    .stat-card.stat-red::before { background-color: var(--red-main); }
+    .stat-card.stat-blue::before { background-color: var(--primary); }
+    .stat-card.stat-purple::before { background-color: #8b5cf6; }
+
+    .stat-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .stat-subtitle {
+      font-size: 0.76rem;
+      color: var(--text-light);
+    }
+
+    .stat-value {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-top: 4px;
+    }
+
+    .val-green { color: var(--green-main); }
+    .val-red { color: var(--red-main); }
+    .val-neutral { color: var(--text-main); }
+
+    /* Controls Bar (Search, Filters, New Customer) */
+    .controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+      max-width: 450px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px 10px 38px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      transition: border-color 0.15s ease;
+    }
+    .search-input:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+    .chip.active {
+      background-color: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    /* Customer List Cards Grid */
+    .customer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+
+    .customer-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+      position: relative;
+    }
+    .customer-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+
+    .cust-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .cust-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .cust-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary-bg);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .cust-details {
+      min-width: 0;
+    }
+
+    .cust-name {
+      font-size: 1.12rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: var(--text-main);
+    }
+
+    .cust-phone {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cust-note {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-style: italic;
+    }
+
+    .cust-card-bottom {
+      border-top: 1px solid var(--border-color);
+      padding-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cust-tx-count {
+      font-size: 0.8rem;
+      color: var(--text-light);
+    }
+
+    /* Balance Badge */
+    .balance-badge {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .badge-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-amount {
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .badge-green {
+      background-color: var(--green-bg);
+      border: 1px solid var(--green-border);
+      color: var(--green-text);
+    }
+    .badge-green .badge-amount { color: var(--green-main); }
+
+    .badge-red {
+      background-color: var(--red-bg);
+      border: 1px solid var(--red-border);
+      color: var(--red-text);
+    }
+    .badge-red .badge-amount { color: var(--red-main); }
+
+    .badge-neutral {
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+    .badge-neutral .badge-amount { color: var(--text-main); }
+
+    /* ==========================================================================
+       Customer Account Detail View
+       ========================================================================== */
+    .view-container {
+      display: none;
+    }
+    .view-container.active {
+      display: block;
+    }
+
+    .account-header-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .customer-profile-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .profile-title-group h1 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profile-meta {
+      display: flex;
+      gap: 14px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Big Net Summary Banner */
+    .net-balance-banner {
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .net-banner-green {
+      background: linear-gradient(135deg, var(--green-bg), rgba(22, 163, 74, 0.12));
+      border: 2px solid var(--green-border);
+    }
+    .net-banner-red {
+      background: linear-gradient(135deg, var(--red-bg), rgba(220, 38, 38, 0.12));
+      border: 2px solid var(--red-border);
+    }
+    .net-banner-neutral {
+      background-color: var(--bg-page);
+      border: 2px solid var(--border-color);
+    }
+
+    .net-banner-text {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .net-banner-label {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .net-banner-green .net-banner-label { color: var(--green-text); }
+    .net-banner-red .net-banner-label { color: var(--red-text); }
+    .net-banner-neutral .net-banner-label { color: var(--text-muted); }
+
+    .net-banner-amount {
+      font-size: 2.5rem;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+    .net-banner-green .net-banner-amount { color: var(--green-main); }
+    .net-banner-red .net-banner-amount { color: var(--red-main); }
+    .net-banner-neutral .net-banner-amount { color: var(--text-main); }
+
+    .net-banner-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    /* Ledger Summary Breakdown 3-col */
+    .ledger-summary-cols {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .ledger-sub-card {
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+    }
+
+    .sub-card-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .sub-card-value {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-top: 2px;
+    }
+
+    /* Quick Add Entry Card */
+    .add-tx-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .add-tx-card h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tx-form-grid {
+      display: grid;
+      grid-template-columns: auto 1fr 1fr 2fr auto;
+      gap: 12px;
+      align-items: end;
+    }
+
+    @media (max-width: 900px) {
+      .tx-form-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .tx-form-grid .full-span-mobile {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 550px) {
+      .tx-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Form Elements */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-input);
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+    .form-control:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    /* Toggle Buttons for Credit / Debit */
+    .tx-type-toggle {
+      display: flex;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 3px;
+      background-color: var(--bg-page);
+      gap: 4px;
+    }
+
+    .tx-type-btn {
+      flex: 1;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      background: transparent;
+      color: var(--text-muted);
+    }
+
+    .tx-type-btn small {
+      font-size: 0.72rem;
+      font-weight: 500;
+      opacity: 0.85;
+    }
+
+    .tx-type-btn.active-credit {
+      background-color: var(--green-main);
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .tx-type-btn.active-debit {
+      background-color: var(--red-main);
+      color: #ffffff;
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* Table Toolbar */
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .table-filter-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    /* Table Container */
+    .table-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table.ledger-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.93rem;
+    }
+
+    table.ledger-table th {
+      background-color: var(--bg-page);
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+      white-space: nowrap;
+    }
+
+    table.ledger-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    table.ledger-table tbody tr:hover {
+      background-color: var(--bg-card-hover);
+    }
+
+    .td-num {
+      width: 50px;
+      color: var(--text-light);
+      font-weight: 600;
+    }
+
+    .td-date {
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    .td-desc {
+      max-width: 280px;
+      font-weight: 500;
+    }
+
+    .amount-cell {
+      font-weight: 700;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .amount-credit {
+      color: var(--green-main);
+    }
+
+    .amount-debit {
+      color: var(--red-main);
+    }
+
+    .balance-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.86rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pill-green {
+      background-color: var(--green-bg);
+      color: var(--green-text);
+      border: 1px solid var(--green-border);
+    }
+
+    .pill-red {
+      background-color: var(--red-bg);
+      color: var(--red-text);
+      border: 1px solid var(--red-border);
+    }
+
+    .pill-neutral {
+      background-color: var(--bg-page);
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    .row-actions {
+      display: flex;
+      gap: 6px;
+      justify-content: flex-end;
+    }
+
+    .row-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .row-btn:hover {
+      background-color: var(--bg-page);
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .row-btn.btn-delete:hover {
+      color: var(--red-main);
+      background-color: var(--red-bg);
+    }
+
+    /* Opening Balance Special Row */
+    tr.opening-balance-row {
+      background-color: var(--bg-page);
+      font-weight: 600;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+      opacity: 0.7;
+    }
+
+    .empty-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .empty-desc {
+      font-size: 0.9rem;
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+
+    /* ==========================================================================
+       Modals
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 520px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      animation: modalFadeIn 0.18s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: scale(0.96); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-color);
+      background-color: var(--bg-page);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast Notifications */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background-color: #1e293b;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-lg);
+      font-size: 0.92rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      animation: toastIn 0.2s ease-out;
+      border-left: 4px solid var(--primary);
+    }
+    .toast.toast-success { border-left-color: var(--green-main); }
+    .toast.toast-error { border-left-color: var(--red-main); }
+
+    @keyframes toastIn {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* ==========================================================================
+       Print Styles for PDF Export & Statements
+       ========================================================================== */
+    @media print {
+      body {
+        background-color: #fff !important;
+        color: #000 !important;
+      }
+      .app-header,
+      .sample-banner,
+      .account-header-nav,
+      .add-tx-card,
+      .table-toolbar,
+      .row-actions,
+      .header-actions,
+      .modal-backdrop,
+      .toast-container,
+      .profile-actions,
+      .btn {
+        display: none !important;
+      }
+      .customer-profile-card,
+      .table-card {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+      }
+      .net-balance-banner {
+        border: 2px solid #000 !important;
+        background: #f8fafc !important;
+        color: #000 !important;
+      }
+      .net-banner-green .net-banner-amount,
+      .net-banner-red .net-banner-amount {
+        color: #000 !important;
+      }
+      table.ledger-table th,
+      table.ledger-table td {
+        border-bottom: 1px solid #ccc !important;
+        padding: 8px 10px !important;
+      }
+      .print-only-header {
+        display: block !important;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #000;
+        padding-bottom: 10px;
+      }
+    }
+
+    .print-only-header {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       Top Navigation Bar
+       ======================================================================== -->
+  <header class="app-header">
+    <div class="header-content">
+      <a href="#" class="brand" id="brand-logo" title="Home (Sabhi Hisab)">
+        <div class="brand-icon">₹</div>
+        <div>
+          <div class="brand-title">Hisab Kitab <span style="font-size:0.95rem; font-weight:600; color:var(--text-muted);">(हिसाब किताब)</span></div>
+          <div class="brand-subtitle">Offline Daily Ledger & Customer Accounts</div>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- Export Backup -->
+        <button class="btn btn-secondary btn-sm" id="btn-export-backup" title="Download entire data backup file">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Export Backup
+        </button>
+
+        <!-- Import Backup -->
+        <button class="btn btn-secondary btn-sm" id="btn-import-backup" title="Restore data from backup file">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+          Import Backup
+        </button>
+        <input type="file" id="import-file-input" accept=".json" style="display:none;">
+
+        <!-- Dark/Light Mode Toggle -->
+        <button class="btn-icon" id="theme-toggle" title="Toggle Light / Dark Mode">
+          <svg id="theme-icon-sun" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path></svg>
+          <svg id="theme-icon-moon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sample Data Notice Banner -->
+  <div class="sample-banner" id="sample-banner" style="display:none;">
+    <div>
+      <strong>✨ Sample Data Active:</strong> You are viewing sample customer records (including brother's example ledger) to explore features.
+    </div>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-sm btn-secondary" id="btn-clear-sample" style="background:#fff; color:#92400e;">
+        Clear Sample Data
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MAIN VIEW 1: Dashboard & Customer Directory
+       ======================================================================== -->
+  <main class="container view-container active" id="view-dashboard">
+
+    <!-- Overall Dashboard Statistics -->
+    <section class="stats-grid">
+      <!-- Total I Owe (Mujhe Dene Hain) -->
+      <div class="stat-card stat-green">
+        <div class="stat-title">
+          <span>Kul Dene Hain (I Owe)</span>
+          <span style="font-size:1.1rem;">🟢</span>
+        </div>
+        <div class="stat-subtitle">Mujhe sabhi ko wapas dene hain</div>
+        <div class="stat-value val-green" id="stat-total-i-owe">₹0</div>
+      </div>
+
+      <!-- Total Owed to Me (Unse Lene Hain) -->
+      <div class="stat-card stat-red">
+        <div class="stat-title">
+          <span>Kul Lene Hain (Owed to Me)</span>
+          <span style="font-size:1.1rem;">🔴</span>
+        </div>
+        <div class="stat-subtitle">Mujhe logo se lene bache hain</div>
+        <div class="stat-value val-red" id="stat-total-they-owe">₹0</div>
+      </div>
+
+      <!-- Total Customers -->
+      <div class="stat-card stat-blue">
+        <div class="stat-title">
+          <span>Kul Customer Accounts</span>
+          <span style="font-size:1.1rem;">👥</span>
+        </div>
+        <div class="stat-subtitle">Active hisab accounts</div>
+        <div class="stat-value val-neutral" id="stat-total-customers">0</div>
+      </div>
+
+      <!-- Net Ledger Status -->
+      <div class="stat-card stat-purple">
+        <div class="stat-title">
+          <span>Net Sthiti (Net Balance)</span>
+          <span style="font-size:1.1rem;">⚖️</span>
+        </div>
+        <div class="stat-subtitle">Kul antar (Difference)</div>
+        <div class="stat-value" id="stat-net-difference">₹0</div>
+      </div>
+    </section>
+
+    <!-- Controls Bar -->
+    <section class="controls-bar">
+      <!-- Search Input -->
+      <div class="search-box">
+        <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+        <input type="text" class="search-input" id="search-customer-input" placeholder="Customer name ya phone number khojein...">
+      </div>
+
+      <!-- Filter Chips -->
+      <div class="filter-chips">
+        <button class="chip active" data-filter="all">Sabhi (All)</button>
+        <button class="chip" data-filter="i-owe">Dene Hain (Green)</button>
+        <button class="chip" data-filter="they-owe">Lene Hain (Red)</button>
+        <button class="chip" data-filter="settled">Barabar (₹0)</button>
+      </div>
+
+      <!-- Add Customer Button -->
+      <button class="btn btn-primary btn-lg" id="btn-open-add-customer">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4"></path></svg>
+        Naya Customer Jodein
+      </button>
+    </section>
+
+    <!-- Customer Cards Grid -->
+    <section class="customer-grid" id="customer-grid-container">
+      <!-- Cards rendered via JavaScript -->
+    </section>
+
+    <!-- Empty State for Customer Grid -->
+    <div class="empty-state" id="customer-empty-state" style="display:none;">
+      <div class="empty-icon">📒</div>
+      <div class="empty-title">Koi Customer Nahi Mila</div>
+      <div class="empty-desc">Abhi tak koi hisab shuru nahi hua hai ya aapke search ke anuroop koi customer nahi mila.</div>
+      <button class="btn btn-primary" id="btn-empty-add-customer">
+        + Pehla Customer Jodein
+      </button>
+    </div>
+
+  </main>
+
+  <!-- ========================================================================
+       MAIN VIEW 2: Customer Account Ledger Details
+       ======================================================================== -->
+  <main class="container view-container" id="view-customer">
+
+    <!-- Top Navigation / Breadcrumbs -->
+    <div class="account-header-nav">
+      <button class="btn btn-secondary" id="btn-back-to-dashboard">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7 7l-7-7 7-7"></path></svg>
+        Sabhi Customers (Wapas)
+      </button>
+
+      <div class="header-actions">
+        <!-- Print / PDF -->
+        <button class="btn btn-secondary btn-sm" id="btn-print-account">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-10 0v4h8v-4"></path></svg>
+          Print / PDF Statement
+        </button>
+
+        <!-- Export CSV -->
+        <button class="btn btn-secondary btn-sm" id="btn-export-csv">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Export CSV
+        </button>
+
+        <!-- Edit Customer -->
+        <button class="btn btn-secondary btn-sm" id="btn-edit-customer-profile">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+          Edit Customer
+        </button>
+
+        <!-- Delete Customer -->
+        <button class="btn btn-secondary btn-sm" id="btn-delete-customer" style="color:var(--red-main);">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          Delete
+        </button>
+      </div>
+    </div>
+
+    <!-- Print Only Header -->
+    <div class="print-only-header">
+      <h2 style="font-size:1.6rem; font-weight:800; margin-bottom:4px;">HISAB KITAB (STATEMENT OF ACCOUNT)</h2>
+      <div id="print-date" style="font-size:0.9rem; color:#555;"></div>
+    </div>
+
+    <!-- Customer Profile & Overall Summary Box -->
+    <section class="customer-profile-card">
+      <div class="profile-top-row">
+        <div class="profile-title-group">
+          <h1 id="acct-cust-name">Customer Name</h1>
+          <div class="profile-meta">
+            <span id="acct-cust-phone">📱 Mobile: -</span>
+            <span id="acct-cust-created">🗓️ Shuru: -</span>
+            <span id="acct-cust-note" style="font-style: italic;">📝 -</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Big Highlight Net Balance Banner -->
+      <div class="net-balance-banner net-banner-green" id="acct-net-banner">
+        <div class="net-banner-text">
+          <div class="net-banner-label" id="acct-net-label">Bacha Hua (Net Balance)</div>
+          <div class="net-banner-amount" id="acct-net-amount">₹0</div>
+          <div class="net-banner-desc" id="acct-net-explanation">Calculation description</div>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">Kul Entries: <span id="acct-tx-count" style="font-weight:800; color:var(--text-main);">0</span></div>
+        </div>
+      </div>
+
+      <!-- 3 Sub Summary Cards -->
+      <div class="ledger-summary-cols">
+        <!-- Opening Balance -->
+        <div class="ledger-sub-card">
+          <div class="sub-card-title">Opening Balance (Pehle Ka)</div>
+          <div class="sub-card-value" id="acct-sum-opening">₹0</div>
+          <small id="acct-sum-opening-type" style="color:var(--text-muted); font-size:0.75rem;">-</small>
+        </div>
+
+        <!-- Total Credit -->
+        <div class="ledger-sub-card">
+          <div class="sub-card-title" style="color:var(--green-main);">Kul Credit (Mujhe Mile)</div>
+          <div class="sub-card-value val-green" id="acct-sum-credit">₹0</div>
+          <small style="color:var(--text-muted); font-size:0.75rem;">Customer ne diye / jama kiye</small>
+        </div>
+
+        <!-- Total Debit -->
+        <div class="ledger-sub-card">
+          <div class="sub-card-title" style="color:var(--red-main);">Kul Debit (Unhone Liye)</div>
+          <div class="sub-card-value val-red" id="acct-sum-debit">₹0</div>
+          <small style="color:var(--text-muted); font-size:0.75rem;">Customer ne mujhse liye</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Add Transaction Card -->
+    <section class="add-tx-card">
+      <h3>
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        Naya Hisab Jodein (New Transaction)
+      </h3>
+
+      <form id="form-quick-add-tx" onsubmit="return false;">
+        <div class="tx-form-grid">
+          <!-- Type (Credit / Debit) -->
+          <div class="form-group full-span-mobile">
+            <label class="form-label">Type (Kism)</label>
+            <div class="tx-type-toggle">
+              <button type="button" class="tx-type-btn active-credit" id="toggle-type-credit">
+                <span>Credit (+)</span>
+                <small>Mujhe Mile</small>
+              </button>
+              <button type="button" class="tx-type-btn" id="toggle-type-debit">
+                <span>Debit (-)</span>
+                <small>Unhone Liye</small>
+              </button>
+            </div>
+          </div>
+
+          <!-- Amount -->
+          <div class="form-group">
+            <label class="form-label" for="tx-input-amount">Rakam (Amount ₹) *</label>
+            <input type="number" step="any" min="0.01" class="form-control" id="tx-input-amount" placeholder="e.g. 500" required>
+          </div>
+
+          <!-- Date -->
+          <div class="form-group">
+            <label class="form-label" for="tx-input-date">Tarikh (Date) *</label>
+            <input type="date" class="form-control" id="tx-input-date" required>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group full-span-mobile">
+            <label class="form-label" for="tx-input-desc">Vivaran (Description / Reason)</label>
+            <input type="text" class="form-control" id="tx-input-desc" placeholder="e.g. Chai, bike repair, cash wapas...">
+          </div>
+
+          <!-- Submit Button -->
+          <div class="form-group full-span-mobile">
+            <button type="submit" class="btn btn-primary" id="btn-submit-quick-tx" style="height:44px; width:100%;">
+              Jodein (Save)
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- Table Toolbar & Filters -->
+    <section class="table-toolbar">
+      <div class="table-filter-group">
+        <!-- Search in Ledger -->
+        <div style="position:relative; width:220px;">
+          <input type="text" class="form-control" id="tx-table-search" placeholder="Search entries..." style="padding-left:32px; font-size:0.85rem;">
+          <svg style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--text-light);" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
+        </div>
+
+        <!-- Filter by Type -->
+        <select class="form-control" id="tx-filter-type" style="width:140px; font-size:0.85rem;">
+          <option value="all">Sabhi (All)</option>
+          <option value="credit">Sirf Credit</option>
+          <option value="debit">Sirf Debit</option>
+        </select>
+
+        <!-- Date Range: From & To -->
+        <input type="date" class="form-control" id="tx-filter-from" style="width:140px; font-size:0.85rem;" title="From Date">
+        <span style="color:var(--text-muted); font-size:0.8rem;">se</span>
+        <input type="date" class="form-control" id="tx-filter-to" style="width:140px; font-size:0.85rem;" title="To Date">
+        <button class="btn btn-secondary btn-sm" id="btn-reset-tx-filters" title="Reset Filters">Reset</button>
+      </div>
+
+      <!-- Sort Toggle -->
+      <button class="btn btn-secondary btn-sm" id="btn-toggle-sort">
+        <span id="sort-icon">⬇️</span>
+        <span id="sort-label">Naya Pehle (Newest First)</span>
+      </button>
+    </section>
+
+    <!-- Ledger Table -->
+    <section class="table-card">
+      <div class="table-responsive">
+        <table class="ledger-table" id="tx-ledger-table">
+          <thead>
+            <tr>
+              <th class="td-num">No.</th>
+              <th>Tarikh (Date)</th>
+              <th>Vivaran (Description)</th>
+              <th style="color:var(--red-main); text-align:right;">Debit (Unhone Liye)</th>
+              <th style="color:var(--green-main); text-align:right;">Credit (Mujhe Mile)</th>
+              <th style="text-align:right;">Running Balance</th>
+              <th style="text-align:right; width:80px;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tx-table-body">
+            <!-- Dynamic rows rendered here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty state inside table -->
+      <div class="empty-state" id="tx-empty-state" style="display:none; padding:40px 20px;">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">Koi Transaction Nahi Mila</div>
+        <div class="empty-desc">Is customer ke liye abhi koi hisab entry darj nahi hai. Upar diye gaye form se pehli entry jodein.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       MODALS
+       ======================================================================== -->
+
+  <!-- Modal 1: Add / Edit Customer -->
+  <div class="modal-backdrop" id="modal-customer">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-customer-title">Naya Customer Jodein</h3>
+        <button type="button" class="btn-icon" data-close-modal title="Close">&times;</button>
+      </div>
+      <form id="form-customer" onsubmit="return false;">
+        <input type="hidden" id="cust-edit-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="modal-cust-name">Customer Ka Naam *</label>
+            <input type="text" class="form-control" id="modal-cust-name" placeholder="e.g. Ramesh Bhai, Amit Sharma..." required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-cust-phone">Mobile / Phone Number</label>
+            <input type="tel" class="form-control" id="modal-cust-phone" placeholder="e.g. 9876543210">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-cust-note">Tippani (Note / Address)</label>
+            <input type="text" class="form-control" id="modal-cust-note" placeholder="e.g. Dukan ka hisab, Colony road...">
+          </div>
+
+          <!-- Opening Balance (Only shown/editable when adding or editing opening) -->
+          <div style="border-top:1px dashed var(--border-color); padding-top:12px; margin-top:4px;">
+            <div class="form-label" style="margin-bottom:8px;">Pehle Ka Balance (Opening Balance)</div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+              <div class="form-group">
+                <label class="form-label" for="modal-cust-op-amount" style="font-size:0.75rem;">Opening Amount (₹)</label>
+                <input type="number" step="any" min="0" class="form-control" id="modal-cust-op-amount" value="0">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="modal-cust-op-type" style="font-size:0.75rem;">Direction (Kism)</label>
+                <select class="form-control" id="modal-cust-op-type">
+                  <option value="credit">Credit (Mujhe Mile The)</option>
+                  <option value="debit">Debit (Unhone Liye The)</option>
+                </select>
+              </div>
+            </div>
+            <small style="color:var(--text-muted); font-size:0.75rem; margin-top:4px; display:block;">
+              Udaharan: Bhai ne shuru me ₹50,000 diye the to Amount: 50000 aur Credit chunein.
+            </small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Radd Karein (Cancel)</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-customer">Surakshit Karein (Save)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Edit Existing Transaction -->
+  <div class="modal-backdrop" id="modal-edit-tx">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Transaction Me Sudhar Karein (Edit Entry)</h3>
+        <button type="button" class="btn-icon" data-close-modal title="Close">&times;</button>
+      </div>
+      <form id="form-edit-tx" onsubmit="return false;">
+        <input type="hidden" id="edit-tx-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Type (Kism)</label>
+            <div class="tx-type-toggle">
+              <button type="button" class="tx-type-btn" id="modal-edit-toggle-credit">
+                <span>Credit (+)</span>
+                <small>Mujhe Mile</small>
+              </button>
+              <button type="button" class="tx-type-btn" id="modal-edit-toggle-debit">
+                <span>Debit (-)</span>
+                <small>Unhone Liye</small>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-edit-amount">Rakam (Amount ₹) *</label>
+            <input type="number" step="any" min="0.01" class="form-control" id="modal-edit-amount" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-edit-date">Tarikh (Date) *</label>
+            <input type="date" class="form-control" id="modal-edit-date" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="modal-edit-desc">Vivaran (Description / Reason)</label>
+            <input type="text" class="form-control" id="modal-edit-desc">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-edit-tx">Update Entry</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Delete Confirmation -->
+  <div class="modal-backdrop" id="modal-delete-confirm">
+    <div class="modal-card" style="max-width:440px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color:var(--red-main);">Pushti Karein (Confirm Delete)</h3>
+        <button type="button" class="btn-icon" data-close-modal title="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="delete-confirm-message" style="font-size:0.95rem;"></p>
+        <div style="background-color:var(--red-bg); border:1px solid var(--red-border); color:var(--red-text); padding:10px 14px; border-radius:6px; font-size:0.82rem;">
+          ⚠️ Yeh action wapas nahi liya ja sakta.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal>Nahi, Cancel</button>
+        <button type="button" class="btn btn-red" id="btn-confirm-delete-action">Haan, Delete Karein</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Import Backup Option (Replace or Merge) -->
+  <div class="modal-backdrop" id="modal-import-confirm">
+    <div class="modal-card" style="max-width:480px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Backup Restore Karein</h3>
+        <button type="button" class="btn-icon" data-close-modal title="Close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.95rem;">Backup file padh li gayi hai:</p>
+        <div id="import-stats-preview" style="background:var(--bg-page); padding:12px 14px; border-radius:8px; font-size:0.88rem;"></div>
+        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">Aap data kaise restore karna chahte hain?</p>
+      </div>
+      <div class="modal-footer" style="flex-wrap:wrap;">
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="button" class="btn btn-primary" id="btn-import-merge">Data Merge Karein</button>
+        <button type="button" class="btn btn-red" id="btn-import-replace">Pura Replace Karein</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ========================================================================
+       JAVASCRIPT: Core Accounting Logic, State Management & UI Handlers
+       ======================================================================== -->
+  <script>
+    /**
+     * ========================================================================
+     * 1. APP CONFIGURATION & ACCOUNTING RULES
+     * ========================================================================
+     * In this application:
+     * - CREDIT = Money RECEIVED by me from customer (Unhone mujhe diye / wapas kiye)
+     * - DEBIT  = Money TAKEN by customer from me (Unhone mujhse liye)
+     * - Positive Balance (> 0) = I owe the customer money (Mujhe unko dene hain) -> GREEN
+     * - Negative Balance (< 0) = Customer owes me money (Unse mujhe lene hain) -> RED
+     * - Zero Balance (== 0)    = Hisab Barabar (Settled) -> NEUTRAL
+     *
+     * To change this sign perspective in the future, simply adjust the multipliers below!
+     */
+    const ACCOUNTING_CONFIG = {
+      // Multiplier signs
+      creditMultiplier: 1,    // Credit increases what I owe them (+1)
+      debitMultiplier: -1,    // Debit decreases what I owe them (-1)
+      openingCreditMultiplier: 1,
+      openingDebitMultiplier: -1,
+
+      // UI Labels in Hinglish/Hindi
+      labelCredit: "Credit (Mujhe Mile)",
+      labelDebit: "Debit (Unhone Liye)",
+      labelIOwe: "Mujhe unko dene hain",
+      labelTheyOwe: "Unse mujhe lene hain",
+      labelSettled: "Hisab Barabar",
+
+      // Storage Key in localStorage
+      storageKey: "hisab_kitab_ledger_data_v1",
+      themeKey: "hisab_kitab_theme_preference"
+    };
+
+    /**
+     * ========================================================================
+     * 2. DATA MODELS & STATE
+     * ========================================================================
+     */
+    let state = {
+      customers: [], // Array of Customer objects
+      activeCustomerId: null,
+      currentFilter: "all", // "all" | "i-owe" | "they-owe" | "settled"
+      searchQuery: "",
+      txSearchQuery: "",
+      txTypeFilter: "all",
+      txFromDate: "",
+      txToDate: "",
+      txSortAsc: false, // false = newest first, true = oldest first
+      pendingDeleteAction: null, // Callback for modal delete
+      pendingImportData: null
+    };
+
+    /**
+     * Helper to generate UUID-like string
+     */
+    function generateId() {
+      return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
+    }
+
+    /**
+     * Format Indian Rupee currency (₹1,50,000.00 or ₹1,50,000)
+     */
+    function formatINR(amount, withSign = false) {
+      const num = Number(amount) || 0;
+      const absVal = Math.abs(num);
+      
+      const formatted = absVal.toLocaleString('en-IN', {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: Number.isInteger(absVal) ? 0 : 2
+      });
+
+      if (withSign && num !== 0) {
+        return (num > 0 ? "+ " : "- ") + "₹" + formatted;
+      }
+      return "₹" + formatted;
+    }
+
+    /**
+     * Format standard date YYYY-MM-DD into readable Indian date
+     */
+    function formatDateReadable(dateStr) {
+      if (!dateStr) return "-";
+      try {
+        const parts = dateStr.split('-');
+        if (parts.length === 3) {
+          const d = new Date(parts[0], parts[1] - 1, parts[2]);
+          return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
+        }
+        return dateStr;
+      } catch (e) {
+        return dateStr;
+      }
+    }
+
+    /**
+     * Today's date in YYYY-MM-DD
+     */
+    function getTodayDateString() {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const day = String(today.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    /**
+     * Show toast message
+     */
+    function showToast(message, type = "normal") {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type === 'success' ? 'toast-success' : type === 'error' ? 'toast-error' : ''}`;
+      toast.innerHTML = `
+        <span>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</span>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.2s ease';
+        setTimeout(() => toast.remove(), 250);
+      }, 3500);
+    }
+
+    /**
+     * ========================================================================
+     * 3. BALANCE & LEDGER CALCULATION ENGINE
+     * ========================================================================
+     */
+    function calculateCustomerBalances(customer) {
+      const opAmount = Number(customer.openingBalance) || 0;
+      const opType = customer.openingBalanceType || "credit";
+      
+      const openingContribution = (opType === "credit" ? ACCOUNTING_CONFIG.openingCreditMultiplier : ACCOUNTING_CONFIG.openingDebitMultiplier) * opAmount;
+      
+      let totalCredit = 0;
+      let totalDebit = 0;
+
+      // Ensure transactions have serial numbers and are sorted chronologically for running balance
+      const rawTx = (customer.transactions || []).map((t, idx) => ({ ...t }));
+      
+      // Chronological sort: date ascending, then created timestamp / serial
+      rawTx.sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return (a.createdAt || 0) - (b.createdAt || 0);
+      });
+
+      // Calculate running balance per transaction
+      let currentRunning = openingContribution;
+      const processedTx = rawTx.map((tx, idx) => {
+        const amt = Number(tx.amount) || 0;
+        if (tx.type === "credit") {
+          totalCredit += amt;
+          currentRunning += amt * ACCOUNTING_CONFIG.creditMultiplier;
+        } else {
+          totalDebit += amt;
+          currentRunning += amt * ACCOUNTING_CONFIG.debitMultiplier;
+        }
+        return {
+          ...tx,
+          serialNo: idx + 1,
+          runningBalance: currentRunning
+        };
+      });
+
+      // Final net balance
+      const netBalance = openingContribution + 
+        (totalCredit * ACCOUNTING_CONFIG.creditMultiplier) + 
+        (totalDebit * ACCOUNTING_CONFIG.debitMultiplier);
+
+      return {
+        openingContribution,
+        openingAmount: opAmount,
+        openingType: opType,
+        totalCredit,
+        totalDebit,
+        netBalance,
+        processedTransactions: processedTx
+      };
+    }
+
+    /**
+     * ========================================================================
+     * 4. LOCAL STORAGE & SAMPLE DATA
+     * ========================================================================
+     */
+    function loadData() {
+      try {
+        const saved = localStorage.getItem(ACCOUNTING_CONFIG.storageKey);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed.customers)) {
+            state.customers = parsed.customers;
+            return;
+          }
+        }
+      } catch (e) {
+        console.error("Error reading from localStorage:", e);
+      }
+      // If no data found, seed with sample data
+      seedSampleData();
+    }
+
+    function saveData() {
+      try {
+        const dataToSave = {
+          version: "1.0",
+          lastUpdated: new Date().toISOString(),
+          customers: state.customers
+        };
+        localStorage.setItem(ACCOUNTING_CONFIG.storageKey, JSON.stringify(dataToSave));
+      } catch (e) {
+        console.error("Error saving to localStorage:", e);
+        showToast("Storage error: Could not save data locally", "error");
+      }
+    }
+
+    function seedSampleData() {
+      const today = getTodayDateString();
+      const past1 = new Date(Date.now() - 5 * 86400000).toISOString().split('T')[0];
+      const past2 = new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0];
+      const past3 = new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0];
+
+      state.customers = [
+        {
+          id: "sample_bhai",
+          name: "Bhai (Brother)",
+          phone: "9876543210",
+          note: "Opening credit ₹50k, he takes cash when needed",
+          openingBalance: 50000,
+          openingBalanceType: "credit",
+          createdAt: Date.now() - 10 * 86400000,
+          transactions: [
+            { id: "tx_1", type: "debit", amount: 50, date: past1, desc: "Chai aur nashta", createdAt: 1 },
+            { id: "tx_2", type: "debit", amount: 1000, date: past2, desc: "Bike repair & service", createdAt: 2 },
+            { id: "tx_3", type: "debit", amount: 2000, date: past3, desc: "Grocery & petrol", createdAt: 3 },
+            { id: "tx_4", type: "debit", amount: 1500, date: today, desc: "Mobile recharge & shopping", createdAt: 4 }
+          ]
+        },
+        {
+          id: "sample_ramesh",
+          name: "Ramesh Kirana Store",
+          phone: "9812345678",
+          note: "Ghar ka ration saman",
+          openingBalance: 5000,
+          openingBalanceType: "debit",
+          createdAt: Date.now() - 15 * 86400000,
+          transactions: [
+            { id: "tx_r1", type: "credit", amount: 3000, date: past2, desc: "Cash jama kiya", createdAt: 1 },
+            { id: "tx_r2", type: "debit", amount: 1200, date: today, desc: "Atta, tel & masale", createdAt: 2 }
+          ]
+        },
+        {
+          id: "sample_pooja",
+          name: "Pooja Sharma",
+          phone: "9988776655",
+          note: "Tailoring & clothes order",
+          openingBalance: 0,
+          openingBalanceType: "credit",
+          createdAt: Date.now() - 2 * 86400000,
+          transactions: [
+            { id: "tx_p1", type: "credit", amount: 10000, date: past1, desc: "Advance payment mila", createdAt: 1 },
+            { id: "tx_p2", type: "debit", amount: 10000, date: today, desc: "Saman deliver kiya (Hisab Barabar)", createdAt: 2 }
+          ]
+        }
+      ];
+
+      saveData();
+      document.getElementById('sample-banner').style.display = 'flex';
+    }
+
+    function clearSampleData() {
+      state.customers = [];
+      saveData();
+      document.getElementById('sample-banner').style.display = 'none';
+      renderAll();
+      showToast("Sample data saaf kar diya gaya. Aap naya customer jod sakte hain.", "success");
+    }
+
+    /**
+     * ========================================================================
+     * 5. RENDER LOGIC: DASHBOARD & CUSTOMER DIRECTORY
+     * ========================================================================
+     */
+    function renderDashboard() {
+      let totalIOwe = 0;
+      let totalTheyOwe = 0;
+      let totalCustCount = state.customers.length;
+
+      const customerWithCalcs = state.customers.map(cust => {
+        const calcs = calculateCustomerBalances(cust);
+        if (calcs.netBalance > 0) {
+          totalIOwe += calcs.netBalance;
+        } else if (calcs.netBalance < 0) {
+          totalTheyOwe += Math.abs(calcs.netBalance);
+        }
+        return { cust, calcs };
+      });
+
+      // Update stat cards
+      document.getElementById('stat-total-i-owe').textContent = formatINR(totalIOwe);
+      document.getElementById('stat-total-they-owe').textContent = formatINR(totalTheyOwe);
+      document.getElementById('stat-total-customers').textContent = totalCustCount;
+      
+      const netDifference = totalIOwe - totalTheyOwe;
+      const netElem = document.getElementById('stat-net-difference');
+      if (netDifference > 0) {
+        netElem.textContent = formatINR(netDifference) + " (Dene Hain)";
+        netElem.className = "stat-value val-green";
+      } else if (netDifference < 0) {
+        netElem.textContent = formatINR(Math.abs(netDifference)) + " (Lene Hain)";
+        netElem.className = "stat-value val-red";
+      } else {
+        netElem.textContent = "₹0 (Barabar)";
+        netElem.className = "stat-value val-neutral";
+      }
+
+      // Filter and search
+      const query = state.searchQuery.trim().toLowerCase();
+      const filtered = customerWithCalcs.filter(({ cust, calcs }) => {
+        // Search filter
+        const matchName = cust.name.toLowerCase().includes(query);
+        const matchPhone = (cust.phone || "").toLowerCase().includes(query);
+        const matchNote = (cust.note || "").toLowerCase().includes(query);
+        const matchesSearch = !query || matchName || matchPhone || matchNote;
+
+        if (!matchesSearch) return false;
+
+        // Category filter
+        if (state.currentFilter === "i-owe") return calcs.netBalance > 0;
+        if (state.currentFilter === "they-owe") return calcs.netBalance < 0;
+        if (state.currentFilter === "settled") return calcs.netBalance === 0;
+        return true;
+      });
+
+      // Render grid
+      const gridContainer = document.getElementById('customer-grid-container');
+      const emptyState = document.getElementById('customer-empty-state');
+
+      if (filtered.length === 0) {
+        gridContainer.innerHTML = "";
+        emptyState.style.display = "block";
+      } else {
+        emptyState.style.display = "none";
+        gridContainer.innerHTML = filtered.map(({ cust, calcs }) => {
+          let badgeClass = "badge-neutral";
+          let badgeTitle = ACCOUNTING_CONFIG.labelSettled;
+          let badgeAmtText = "₹0";
+
+          if (calcs.netBalance > 0) {
+            badgeClass = "badge-green";
+            badgeTitle = ACCOUNTING_CONFIG.labelIOwe;
+            badgeAmtText = formatINR(calcs.netBalance);
+          } else if (calcs.netBalance < 0) {
+            badgeClass = "badge-red";
+            badgeTitle = ACCOUNTING_CONFIG.labelTheyOwe;
+            badgeAmtText = formatINR(Math.abs(calcs.netBalance));
+          }
+
+          const initials = cust.name ? cust.name.trim().charAt(0).toUpperCase() : "?";
+
+          return `
+            <div class="customer-card" data-customer-id="${cust.id}">
+              <div class="cust-card-top">
+                <div class="cust-info">
+                  <div class="cust-avatar">${initials}</div>
+                  <div class="cust-details">
+                    <div class="cust-name" title="${cust.name}">${cust.name}</div>
+                    ${cust.phone ? `<div class="cust-phone">📱 ${cust.phone}</div>` : ''}
+                    ${cust.note ? `<div class="cust-note" title="${cust.note}">${cust.note}</div>` : ''}
+                  </div>
+                </div>
+              </div>
+
+              <div class="cust-card-bottom">
+                <div class="cust-tx-count">
+                  ${calcs.processedTransactions.length} ${calcs.processedTransactions.length === 1 ? 'entry' : 'entries'}
+                </div>
+                <div class="balance-badge ${badgeClass}">
+                  <span class="badge-label">${badgeTitle}</span>
+                  <span class="badge-amount">${badgeAmtText}</span>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        // Attach click listeners to cards
+        gridContainer.querySelectorAll('.customer-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const id = card.getAttribute('data-customer-id');
+            openCustomerAccount(id);
+          });
+        });
+      }
+    }
+
+    /**
+     * ========================================================================
+     * 6. RENDER LOGIC: CUSTOMER ACCOUNT PAGE & TRANSACTIONS
+     * ========================================================================
+     */
+    function openCustomerAccount(customerId) {
+      state.activeCustomerId = customerId;
+      document.getElementById('view-dashboard').classList.remove('active');
+      document.getElementById('view-customer').classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Reset filters & inputs for transactions
+      document.getElementById('tx-input-amount').value = '';
+      document.getElementById('tx-input-desc').value = '';
+      document.getElementById('tx-input-date').value = getTodayDateString();
+      setQuickTxType("credit");
+
+      renderCustomerAccount();
+    }
+
+    function renderCustomerAccount() {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) {
+        document.getElementById('view-customer').classList.remove('active');
+        document.getElementById('view-dashboard').classList.add('active');
+        renderDashboard();
+        return;
+      }
+
+      const calcs = calculateCustomerBalances(customer);
+
+      // Customer Details Header
+      document.getElementById('acct-cust-name').textContent = customer.name;
+      document.getElementById('acct-cust-phone').textContent = customer.phone ? `📱 ${customer.phone}` : '📱 Phone: -';
+      document.getElementById('acct-cust-note').textContent = customer.note ? `📝 ${customer.note}` : '📝 No note';
+      document.getElementById('acct-cust-created').textContent = `🗓️ Shuru: ${formatDateReadable(new Date(customer.createdAt || Date.now()).toISOString().split('T')[0])}`;
+
+      // Net Banner Configuration
+      const netBanner = document.getElementById('acct-net-banner');
+      const netLabel = document.getElementById('acct-net-label');
+      const netAmount = document.getElementById('acct-net-amount');
+      const netExp = document.getElementById('acct-net-explanation');
+      document.getElementById('acct-tx-count').textContent = calcs.processedTransactions.length;
+
+      if (calcs.netBalance > 0) {
+        netBanner.className = "net-balance-banner net-banner-green";
+        netLabel.textContent = `🟢 ${ACCOUNTING_CONFIG.labelIOwe}`;
+        netAmount.textContent = formatINR(calcs.netBalance);
+        netExp.textContent = `Aapko yeh rakam ${customer.name} ko deni bachi hai (They gave you more than they took).`;
+      } else if (calcs.netBalance < 0) {
+        netBanner.className = "net-balance-banner net-banner-red";
+        netLabel.textContent = `🔴 ${ACCOUNTING_CONFIG.labelTheyOwe}`;
+        netAmount.textContent = formatINR(Math.abs(calcs.netBalance));
+        netExp.textContent = `${customer.name} se aapko yeh rakam leni bachi hai (They took more than they gave).`;
+      } else {
+        netBanner.className = "net-balance-banner net-banner-neutral";
+        netLabel.textContent = `⚖️ ${ACCOUNTING_CONFIG.labelSettled}`;
+        netAmount.textContent = "₹0";
+        netExp.textContent = "Hisab barabar hai. Koi lena-dena baaki nahi hai.";
+      }
+
+      // Summary Breakdown Cards
+      const opDirText = calcs.openingAmount > 0 
+        ? (calcs.openingType === 'credit' ? 'Credit (Mujhe Mile The)' : 'Debit (Unhone Liye The)') 
+        : 'Zero Opening';
+      document.getElementById('acct-sum-opening').textContent = formatINR(calcs.openingAmount);
+      document.getElementById('acct-sum-opening-type').textContent = opDirText;
+      document.getElementById('acct-sum-credit').textContent = formatINR(calcs.totalCredit);
+      document.getElementById('acct-sum-debit').textContent = formatINR(calcs.totalDebit);
+
+      // Filter transactions for table
+      const search = state.txSearchQuery.toLowerCase().trim();
+      let displayTx = calcs.processedTransactions.filter(tx => {
+        // Search description & amount
+        const matchDesc = (tx.desc || "").toLowerCase().includes(search);
+        const matchAmt = String(tx.amount).includes(search);
+        if (search && !matchDesc && !matchAmt) return false;
+
+        // Type filter
+        if (state.txTypeFilter !== "all" && tx.type !== state.txTypeFilter) return false;
+
+        // Date range
+        if (state.txFromDate && tx.date < state.txFromDate) return false;
+        if (state.txToDate && tx.date > state.txToDate) return false;
+
+        return true;
+      });
+
+      // Sort
+      if (state.txSortAsc) {
+        displayTx.sort((a, b) => a.serialNo - b.serialNo);
+      } else {
+        displayTx.sort((a, b) => b.serialNo - a.serialNo);
+      }
+
+      // Table Render
+      const tbody = document.getElementById('tx-table-body');
+      const tableEmpty = document.getElementById('tx-empty-state');
+
+      if (displayTx.length === 0 && calcs.openingAmount === 0) {
+        tbody.innerHTML = "";
+        tableEmpty.style.display = "block";
+      } else {
+        tableEmpty.style.display = "none";
+        let rowsHtml = "";
+
+        // If opening balance exists and we are in oldest-first sort, show opening balance row at top
+        const showOpeningRow = calcs.openingAmount > 0;
+        const openingRowHtml = showOpeningRow ? `
+          <tr class="opening-balance-row">
+            <td class="td-num">0</td>
+            <td class="td-date">-</td>
+            <td class="td-desc">
+              <strong>Opening Balance (${calcs.openingType === 'credit' ? 'Credit: Mujhe Mile The' : 'Debit: Unhone Liye The'})</strong>
+            </td>
+            <td style="text-align:right;" class="amount-cell ${calcs.openingType === 'debit' ? 'amount-debit' : ''}">
+              ${calcs.openingType === 'debit' ? formatINR(calcs.openingAmount) : '-'}
+            </td>
+            <td style="text-align:right;" class="amount-cell ${calcs.openingType === 'credit' ? 'amount-credit' : ''}">
+              ${calcs.openingType === 'credit' ? formatINR(calcs.openingAmount) : '-'}
+            </td>
+            <td style="text-align:right;">
+              <span class="balance-pill ${calcs.openingContribution > 0 ? 'pill-green' : calcs.openingContribution < 0 ? 'pill-red' : 'pill-neutral'}">
+                ${calcs.openingContribution > 0 ? '🟢 ' : calcs.openingContribution < 0 ? '🔴 ' : ''}${formatINR(Math.abs(calcs.openingContribution))}
+              </span>
+            </td>
+            <td></td>
+          </tr>
+        ` : '';
+
+        if (state.txSortAsc && showOpeningRow) {
+          rowsHtml += openingRowHtml;
+        }
+
+        rowsHtml += displayTx.map(tx => {
+          const isCredit = tx.type === "credit";
+          let pillClass = "pill-neutral";
+          let pillPrefix = "";
+          if (tx.runningBalance > 0) {
+            pillClass = "pill-green";
+            pillPrefix = "🟢 ";
+          } else if (tx.runningBalance < 0) {
+            pillClass = "pill-red";
+            pillPrefix = "🔴 ";
+          }
+
+          return `
+            <tr>
+              <td class="td-num">#${tx.serialNo}</td>
+              <td class="td-date">${formatDateReadable(tx.date)}</td>
+              <td class="td-desc">
+                ${tx.desc ? tx.desc : '<span style="color:var(--text-light); font-style:italic;">No description</span>'}
+              </td>
+              <td style="text-align:right;" class="amount-cell ${!isCredit ? 'amount-debit' : ''}">
+                ${!isCredit ? "- " + formatINR(tx.amount) : "-"}
+              </td>
+              <td style="text-align:right;" class="amount-cell ${isCredit ? 'amount-credit' : ''}">
+                ${isCredit ? "+ " + formatINR(tx.amount) : "-"}
+              </td>
+              <td style="text-align:right;">
+                <span class="balance-pill ${pillClass}">
+                  ${pillPrefix}${formatINR(Math.abs(tx.runningBalance))}
+                </span>
+              </td>
+              <td>
+                <div class="row-actions">
+                  <button class="row-btn btn-edit-tx" data-tx-id="${tx.id}" title="Edit Transaction">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                  </button>
+                  <button class="row-btn btn-delete btn-delete-tx" data-tx-id="${tx.id}" title="Delete Transaction">
+                    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        if (!state.txSortAsc && showOpeningRow) {
+          rowsHtml += openingRowHtml;
+        }
+
+        tbody.innerHTML = rowsHtml;
+
+        // Attach row action listeners
+        tbody.querySelectorAll('.btn-edit-tx').forEach(btn => {
+          btn.addEventListener('click', () => openEditTxModal(btn.getAttribute('data-tx-id')));
+        });
+        tbody.querySelectorAll('.btn-delete-tx').forEach(btn => {
+          btn.addEventListener('click', () => confirmDeleteTransaction(btn.getAttribute('data-tx-id')));
+        });
+      }
+    }
+
+    function renderAll() {
+      if (document.getElementById('view-customer').classList.contains('active')) {
+        renderCustomerAccount();
+      } else {
+        renderDashboard();
+      }
+    }
+
+    /**
+     * ========================================================================
+     * 7. TRANSACTION HANDLERS (ADD, EDIT, DELETE)
+     * ========================================================================
+     */
+    let quickTxSelectedType = "credit";
+    function setQuickTxType(type) {
+      quickTxSelectedType = type;
+      const creditBtn = document.getElementById('toggle-type-credit');
+      const debitBtn = document.getElementById('toggle-type-debit');
+      if (type === "credit") {
+        creditBtn.className = "tx-type-btn active-credit";
+        debitBtn.className = "tx-type-btn";
+      } else {
+        creditBtn.className = "tx-type-btn";
+        debitBtn.className = "tx-type-btn active-debit";
+      }
+    }
+
+    function handleAddQuickTx() {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+
+      const amtInput = document.getElementById('tx-input-amount');
+      const dateInput = document.getElementById('tx-input-date');
+      const descInput = document.getElementById('tx-input-desc');
+
+      const amount = parseFloat(amtInput.value);
+      const date = dateInput.value;
+      const desc = descInput.value.trim();
+
+      if (!amount || amount <= 0) {
+        showToast("Kripya sahi rakam (amount > 0) dalein.", "error");
+        amtInput.focus();
+        return;
+      }
+      if (!date) {
+        showToast("Tarikh (Date) zaroori hai.", "error");
+        dateInput.focus();
+        return;
+      }
+
+      if (!Array.isArray(customer.transactions)) {
+        customer.transactions = [];
+      }
+
+      const newTx = {
+        id: generateId(),
+        type: quickTxSelectedType,
+        amount: amount,
+        date: date,
+        desc: desc,
+        createdAt: Date.now()
+      };
+
+      customer.transactions.push(newTx);
+      saveData();
+      renderCustomerAccount();
+
+      // Reset form fields
+      amtInput.value = '';
+      descInput.value = '';
+      amtInput.focus();
+
+      const typeLabel = quickTxSelectedType === 'credit' ? 'Credit (+)' : 'Debit (-)';
+      showToast(`${typeLabel} ₹${amount} hisab me jod diya gaya.`, "success");
+    }
+
+    let editTxSelectedType = "credit";
+    function setEditTxType(type) {
+      editTxSelectedType = type;
+      const creditBtn = document.getElementById('modal-edit-toggle-credit');
+      const debitBtn = document.getElementById('modal-edit-toggle-debit');
+      if (type === "credit") {
+        creditBtn.className = "tx-type-btn active-credit";
+        debitBtn.className = "tx-type-btn";
+      } else {
+        creditBtn.className = "tx-type-btn";
+        debitBtn.className = "tx-type-btn active-debit";
+      }
+    }
+
+    function openEditTxModal(txId) {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+      const tx = (customer.transactions || []).find(t => t.id === txId);
+      if (!tx) return;
+
+      document.getElementById('edit-tx-id').value = tx.id;
+      document.getElementById('modal-edit-amount').value = tx.amount;
+      document.getElementById('modal-edit-date').value = tx.date;
+      document.getElementById('modal-edit-desc').value = tx.desc || '';
+      setEditTxType(tx.type);
+
+      openModal('modal-edit-tx');
+    }
+
+    function handleSaveEditTx() {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+      const txId = document.getElementById('edit-tx-id').value;
+      const tx = (customer.transactions || []).find(t => t.id === txId);
+      if (!tx) return;
+
+      const amount = parseFloat(document.getElementById('modal-edit-amount').value);
+      const date = document.getElementById('modal-edit-date').value;
+      const desc = document.getElementById('modal-edit-desc').value.trim();
+
+      if (!amount || amount <= 0) {
+        showToast("Rakam (amount > 0) zaroori hai.", "error");
+        return;
+      }
+      if (!date) {
+        showToast("Tarikh (Date) zaroori hai.", "error");
+        return;
+      }
+
+      tx.type = editTxSelectedType;
+      tx.amount = amount;
+      tx.date = date;
+      tx.desc = desc;
+
+      saveData();
+      closeModal('modal-edit-tx');
+      renderCustomerAccount();
+      showToast("Transaction safaltapurvak update ho gaya.", "success");
+    }
+
+    function confirmDeleteTransaction(txId) {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+      const tx = (customer.transactions || []).find(t => t.id === txId);
+      if (!tx) return;
+
+      const msg = `Kya aap sach me #${tx.date} ki ₹${tx.amount} wali entry delete karna chahte hain?`;
+      document.getElementById('delete-confirm-message').textContent = msg;
+
+      state.pendingDeleteAction = () => {
+        customer.transactions = customer.transactions.filter(t => t.id !== txId);
+        saveData();
+        renderCustomerAccount();
+        showToast("Entry delete kar di gayi.", "success");
+      };
+
+      openModal('modal-delete-confirm');
+    }
+
+    /**
+     * ========================================================================
+     * 8. CUSTOMER MANAGEMENT (ADD, EDIT, DELETE)
+     * ========================================================================
+     */
+    function openAddCustomerModal() {
+      document.getElementById('modal-customer-title').textContent = "Naya Customer Jodein";
+      document.getElementById('cust-edit-id').value = "";
+      document.getElementById('modal-cust-name').value = "";
+      document.getElementById('modal-cust-phone').value = "";
+      document.getElementById('modal-cust-note').value = "";
+      document.getElementById('modal-cust-op-amount').value = "0";
+      document.getElementById('modal-cust-op-type').value = "credit";
+      openModal('modal-customer');
+      setTimeout(() => document.getElementById('modal-cust-name').focus(), 150);
+    }
+
+    function openEditCustomerModal() {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+
+      document.getElementById('modal-customer-title').textContent = "Customer Details Me Sudhar";
+      document.getElementById('cust-edit-id').value = customer.id;
+      document.getElementById('modal-cust-name').value = customer.name;
+      document.getElementById('modal-cust-phone').value = customer.phone || "";
+      document.getElementById('modal-cust-note').value = customer.note || "";
+      document.getElementById('modal-cust-op-amount').value = customer.openingBalance || 0;
+      document.getElementById('modal-cust-op-type').value = customer.openingBalanceType || "credit";
+
+      openModal('modal-customer');
+    }
+
+    function handleSaveCustomer() {
+      const id = document.getElementById('cust-edit-id').value;
+      const name = document.getElementById('modal-cust-name').value.trim();
+      const phone = document.getElementById('modal-cust-phone').value.trim();
+      const note = document.getElementById('modal-cust-note').value.trim();
+      const opAmount = parseFloat(document.getElementById('modal-cust-op-amount').value) || 0;
+      const opType = document.getElementById('modal-cust-op-type').value;
+
+      if (!name) {
+        showToast("Customer ka naam zaroori hai.", "error");
+        document.getElementById('modal-cust-name').focus();
+        return;
+      }
+
+      if (id) {
+        // Edit existing customer
+        const customer = state.customers.find(c => c.id === id);
+        if (customer) {
+          customer.name = name;
+          customer.phone = phone;
+          customer.note = note;
+          customer.openingBalance = opAmount;
+          customer.openingBalanceType = opType;
+          saveData();
+          closeModal('modal-customer');
+          renderAll();
+          showToast("Customer details update ho gayi.", "success");
+        }
+      } else {
+        // New Customer
+        const newCustomer = {
+          id: generateId(),
+          name: name,
+          phone: phone,
+          note: note,
+          openingBalance: opAmount,
+          openingBalanceType: opType,
+          createdAt: Date.now(),
+          transactions: []
+        };
+        state.customers.unshift(newCustomer);
+        saveData();
+        closeModal('modal-customer');
+        renderDashboard();
+        showToast(`Naya customer "${name}" safaltapurvak joda gaya!`, "success");
+        // Open the customer's ledger immediately
+        openCustomerAccount(newCustomer.id);
+      }
+    }
+
+    function confirmDeleteCustomer() {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+
+      const msg = `Kya aap sach me customer "${customer.name}" aur unke sabhi hisab (${(customer.transactions || []).length} entries) ko delete karna chahte hain?`;
+      document.getElementById('delete-confirm-message').textContent = msg;
+
+      state.pendingDeleteAction = () => {
+        state.customers = state.customers.filter(c => c.id !== customer.id);
+        state.activeCustomerId = null;
+        saveData();
+        document.getElementById('view-customer').classList.remove('active');
+        document.getElementById('view-dashboard').classList.add('active');
+        renderDashboard();
+        showToast(`Customer "${customer.name}" delete ho gaya.`, "success");
+      };
+
+      openModal('modal-delete-confirm');
+    }
+
+    /**
+     * ========================================================================
+     * 9. STATEMENT EXPORT: CSV & PRINT/PDF
+     * ========================================================================
+     */
+    function exportCustomerCSV() {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+
+      const calcs = calculateCustomerBalances(customer);
+
+      let csv = "\uFEFF"; // UTF-8 BOM for Microsoft Excel
+      csv += `HISAB KITAB - STATEMENT OF ACCOUNT\n`;
+      csv += `Customer Name,${customer.name}\n`;
+      csv += `Phone,${customer.phone || '-'}\n`;
+      csv += `Notes,${customer.note || '-'}\n`;
+      csv += `Statement Date,${getTodayDateString()}\n`;
+      csv += `Opening Balance,${calcs.openingAmount} (${calcs.openingType})\n`;
+      csv += `Total Credit (Mujhe Mile),${calcs.totalCredit}\n`;
+      csv += `Total Debit (Unhone Liye),${calcs.totalDebit}\n`;
+      csv += `Net Balance,${calcs.netBalance > 0 ? 'Mujhe dene hain ' + calcs.netBalance : 'Mujhe lene hain ' + Math.abs(calcs.netBalance)}\n\n`;
+
+      csv += `Serial No,Date,Description,Debit (Unhone Liye),Credit (Mujhe Mile),Running Balance\n`;
+
+      // Opening balance row
+      if (calcs.openingAmount > 0) {
+        csv += `0,Opening,Opening Balance,${calcs.openingType === 'debit' ? calcs.openingAmount : 0},${calcs.openingType === 'credit' ? calcs.openingAmount : 0},${calcs.openingContribution}\n`;
+      }
+
+      calcs.processedTransactions.forEach(tx => {
+        const cleanDesc = `"${(tx.desc || '').replace(/"/g, '""')}"`;
+        const debitAmt = tx.type === 'debit' ? tx.amount : 0;
+        const creditAmt = tx.type === 'credit' ? tx.amount : 0;
+        csv += `${tx.serialNo},${tx.date},${cleanDesc},${debitAmt},${creditAmt},${tx.runningBalance}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const cleanFileName = customer.name.replace(/[^a-zA-Z0-9_-]/g, "_");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `hisab_${cleanFileName}_${getTodayDateString()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("CSV file download ho gayi.", "success");
+    }
+
+    function printCustomerStatement() {
+      const customer = state.customers.find(c => c.id === state.activeCustomerId);
+      if (!customer) return;
+
+      document.getElementById('print-date').textContent = `Date of Statement: ${new Date().toLocaleDateString('en-IN', { dateStyle: 'full' })}`;
+      window.print();
+    }
+
+    /**
+     * ========================================================================
+     * 10. BACKUP & RESTORE (JSON EXPORT & IMPORT)
+     * ========================================================================
+     */
+    function exportBackupJSON() {
+      const backupData = {
+        app: "Hisab Kitab (Offline Daily Ledger)",
+        version: "1.0",
+        exportedAt: new Date().toISOString(),
+        customersCount: state.customers.length,
+        customers: state.customers
+      };
+
+      const jsonStr = JSON.stringify(backupData, null, 2);
+      const blob = new Blob([jsonStr], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+      link.href = url;
+      link.download = `hisab_kitab_backup_${timestamp}.json`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Poora Backup JSON file download ho gaya!", "success");
+    }
+
+    function handleImportFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          if (!parsed.customers || !Array.isArray(parsed.customers)) {
+            throw new Error("Invalid format: 'customers' array missing.");
+          }
+
+          state.pendingImportData = parsed.customers;
+
+          const previewDiv = document.getElementById('import-stats-preview');
+          let totalTx = 0;
+          parsed.customers.forEach(c => {
+            totalTx += (c.transactions || []).length;
+          });
+
+          previewDiv.innerHTML = `
+            <strong>File Check:</strong> Valid Backup<br>
+            • Customers in Backup: <strong>${parsed.customers.length}</strong><br>
+            • Total Transactions: <strong>${totalTx}</strong><br>
+            • Backup Date: ${parsed.exportedAt ? new Date(parsed.exportedAt).toLocaleString() : 'N/A'}
+          `;
+
+          openModal('modal-import-confirm');
+        } catch (err) {
+          showToast("Invalid JSON file: " + err.message, "error");
+        }
+      };
+      reader.readAsText(file);
+      // Reset input so same file can be selected again if needed
+      e.target.value = '';
+    }
+
+    function applyImport(mode) {
+      if (!state.pendingImportData) return;
+
+      if (mode === "replace") {
+        state.customers = state.pendingImportData;
+      } else if (mode === "merge") {
+        // Merge without duplicate IDs
+        const existingMap = new Map(state.customers.map(c => [c.id, c]));
+        state.pendingImportData.forEach(newCust => {
+          if (!existingMap.has(newCust.id)) {
+            state.customers.push(newCust);
+          } else {
+            // Merge transactions
+            const existingCust = existingMap.get(newCust.id);
+            const txMap = new Map((existingCust.transactions || []).map(t => [t.id, t]));
+            (newCust.transactions || []).forEach(t => {
+              if (!txMap.has(t.id)) {
+                existingCust.transactions.push(t);
+              }
+            });
+          }
+        });
+      }
+
+      saveData();
+      closeModal('modal-import-confirm');
+      state.pendingImportData = null;
+      renderAll();
+      showToast(`Data safaltapurvak ${mode === 'replace' ? 'restore (replace)' : 'merge'} ho gaya!`, "success");
+    }
+
+    /**
+     * ========================================================================
+     * 11. MODAL & THEME CONTROLS
+     * ========================================================================
+     */
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.remove('open');
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem(ACCOUNTING_CONFIG.themeKey) || "light";
+      setTheme(savedTheme);
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem(ACCOUNTING_CONFIG.themeKey, theme);
+      const sun = document.getElementById('theme-icon-sun');
+      const moon = document.getElementById('theme-icon-moon');
+      if (theme === "dark") {
+        sun.style.display = "none";
+        moon.style.display = "block";
+      } else {
+        sun.style.display = "block";
+        moon.style.display = "none";
+      }
+    }
+
+    /**
+     * ========================================================================
+     * 12. EVENT LISTENERS INITIALIZATION
+     * ========================================================================
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+      loadData();
+      renderAll();
+
+      // Navigation: Brand Click returns to Dashboard
+      document.getElementById('brand-logo').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('view-customer').classList.remove('active');
+        document.getElementById('view-dashboard').classList.add('active');
+        state.activeCustomerId = null;
+        renderDashboard();
+      });
+
+      // Back Button from Customer Ledger
+      document.getElementById('btn-back-to-dashboard').addEventListener('click', () => {
+        document.getElementById('view-customer').classList.remove('active');
+        document.getElementById('view-dashboard').classList.add('active');
+        state.activeCustomerId = null;
+        renderDashboard();
+      });
+
+      // Theme toggle button
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme') || "light";
+        setTheme(current === "dark" ? "light" : "dark");
+      });
+
+      // Clear Sample Data Button
+      document.getElementById('btn-clear-sample').addEventListener('click', clearSampleData);
+
+      // Search Customers
+      document.getElementById('search-customer-input').addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        renderDashboard();
+      });
+
+      // Filter Chips
+      document.querySelectorAll('.filter-chips .chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.currentFilter = chip.getAttribute('data-filter');
+          renderDashboard();
+        });
+      });
+
+      // Customer Modal triggers
+      document.getElementById('btn-open-add-customer').addEventListener('click', openAddCustomerModal);
+      document.getElementById('btn-empty-add-customer').addEventListener('click', openAddCustomerModal);
+      document.getElementById('btn-edit-customer-profile').addEventListener('click', openEditCustomerModal);
+      document.getElementById('btn-delete-customer').addEventListener('click', confirmDeleteCustomer);
+      document.getElementById('form-customer').addEventListener('submit', handleSaveCustomer);
+
+      // Quick Add Transaction Form
+      document.getElementById('toggle-type-credit').addEventListener('click', () => setQuickTxType("credit"));
+      document.getElementById('toggle-type-debit').addEventListener('click', () => setQuickTxType("debit"));
+      document.getElementById('form-quick-add-tx').addEventListener('submit', handleAddQuickTx);
+
+      // Edit Transaction Modal
+      document.getElementById('modal-edit-toggle-credit').addEventListener('click', () => setEditTxType("credit"));
+      document.getElementById('modal-edit-toggle-debit').addEventListener('click', () => setEditTxType("debit"));
+      document.getElementById('form-edit-tx').addEventListener('submit', handleSaveEditTx);
+
+      // Transaction Table Controls
+      document.getElementById('tx-table-search').addEventListener('input', (e) => {
+        state.txSearchQuery = e.target.value;
+        renderCustomerAccount();
+      });
+      document.getElementById('tx-filter-type').addEventListener('change', (e) => {
+        state.txTypeFilter = e.target.value;
+        renderCustomerAccount();
+      });
+      document.getElementById('tx-filter-from').addEventListener('change', (e) => {
+        state.txFromDate = e.target.value;
+        renderCustomerAccount();
+      });
+      document.getElementById('tx-filter-to').addEventListener('change', (e) => {
+        state.txToDate = e.target.value;
+        renderCustomerAccount();
+      });
+      document.getElementById('btn-reset-tx-filters').addEventListener('click', () => {
+        document.getElementById('tx-table-search').value = '';
+        document.getElementById('tx-filter-type').value = 'all';
+        document.getElementById('tx-filter-from').value = '';
+        document.getElementById('tx-filter-to').value = '';
+        state.txSearchQuery = '';
+        state.txTypeFilter = 'all';
+        state.txFromDate = '';
+        state.txToDate = '';
+        renderCustomerAccount();
+      });
+      document.getElementById('btn-toggle-sort').addEventListener('click', () => {
+        state.txSortAsc = !state.txSortAsc;
+        const icon = document.getElementById('sort-icon');
+        const label = document.getElementById('sort-label');
+        if (state.txSortAsc) {
+          icon.textContent = "⬆️";
+          label.textContent = "Purana Pehle (Oldest First)";
+        } else {
+          icon.textContent = "⬇️";
+          label.textContent = "Naya Pehle (Newest First)";
+        }
+        renderCustomerAccount();
+      });
+
+      // Export Actions
+      document.getElementById('btn-export-backup').addEventListener('click', exportBackupJSON);
+      document.getElementById('btn-import-backup').addEventListener('click', () => {
+        document.getElementById('import-file-input').click();
+      });
+      document.getElementById('import-file-input').addEventListener('change', handleImportFileSelect);
+      document.getElementById('btn-import-replace').addEventListener('click', () => applyImport('replace'));
+      document.getElementById('btn-import-merge').addEventListener('click', () => applyImport('merge'));
+
+      document.getElementById('btn-export-csv').addEventListener('click', exportCustomerCSV);
+      document.getElementById('btn-print-account').addEventListener('click', printCustomerStatement);
+
+      // Delete confirmation modal action
+      document.getElementById('btn-confirm-delete-action').addEventListener('click', () => {
+        if (typeof state.pendingDeleteAction === 'function') {
+          state.pendingDeleteAction();
+          state.pendingDeleteAction = null;
+        }
+        closeModal('modal-delete-confirm');
+      });
+
+      // Close modal on click backdrop or [data-close-modal] buttons
+      document.querySelectorAll('[data-close-modal]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const backdrop = e.target.closest('.modal-backdrop');
+          if (backdrop) backdrop.classList.remove('open');
+        });
+      });
+
+      document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+        backdrop.addEventListener('click', (e) => {
+          if (e.target === backdrop) {
+            backdrop.classList.remove('open');
+          }
+        });
+      });
+
+      // Escape key closes modals
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          document.querySelectorAll('.modal-backdrop.open').forEach(modal => modal.classList.remove('open'));
+        }
+      });
+    });
+  </script>
+</body>
+</html>

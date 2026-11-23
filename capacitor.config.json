@@ -1,0 +1,8 @@
+{
+  "appId": "com.amanc52.hisabkitab",
+  "appName": "Hisab Kitab",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}
