@@ -1,23 +1,32 @@
-# Hisab Kitab (हिसाब किताब) - Offline Daily Ledger
+# 📒 Hisab Kitab (हिसाब किताब) - Offline Daily Ledger
 
-A fast, clean, and 100% offline personal ledger application designed for managing daily money given and taken across individual customer accounts.
+<p align="center">
+  <a href="https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk">
+    <img src="https://img.shields.io/badge/📲_Direct_Download-Hisab--Kitab.apk-brightgreen?style=for-the-badge&logo=android" alt="Download Android APK" height="50">
+  </a>
+</p>
+
+### 📥 [यहाँ क्लिक करके सीधे APK डाउनलोड करें (Direct Download APK)](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)
+
+> **📱 मोबाइल में इनस्टॉल कैसे करें:**
+> 1. ऊपर दिए गए **हरे रंग के बटन** या **Direct Download लिंक** पर क्लिक करें।
+> 2. `Hisab-Kitab.apk` फ़ाइल आपके फ़ोन में डाउनलोड हो जाएगी।
+> 3. फ़ाइल पर क्लिक करें और **"Install"** दबाएं।
+> 4. यह ऐप आपके फ़ोन में हमेशा के लिए **100% ऑफ़लाइन** काम करेगा (बिना इंटरनेट के)!
 
 ---
 
-## 🚀 How to Open and Run
+## 💻 कंप्यूटर / लैपटॉप पर कैसे चलाएं?
 
-No installations, Node.js, server, or internet connection are required!
-
-1. Go to this folder on your computer:
-   `c:\Users\Aman\Desktop\anti_gravity\Hisab KItab`
-2. **Double-click on `index.html`** (or right-click → **Open with** → Google Chrome, Microsoft Edge, Brave, or Firefox).
-3. The app is immediately ready to use!
+कंप्यूटर पर चलाने के लिए किसी इंस्टॉलेशन या इंटरनेट की ज़रूरत नहीं है:
+1. इस रिपॉजिटरी की `index.html` फ़ाइल डाउनलोड करें।
+2. उस पर डबल-क्लिक करें — यह तुरंत Google Chrome, Edge, या Firefox में खुल जाएगी।
 
 ---
 
 ## 💡 Accounting & Balance Rules
 
-This ledger follows the exact perspective of your daily cash dealings:
+यह लेज़र आपके दैनिक लेन-देन के हिसाब से काम करता है:
 
 ### 1. Meaning of Credit & Debit
 | Type | Hindi Meaning | Explanation | Effect on Balance |
