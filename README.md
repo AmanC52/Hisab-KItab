@@ -16,9 +16,9 @@
 
 | प्लेटफ़ॉर्म | डाउनलोड लिंक | विवरण |
 | :--- | :--- | :--- |
-| 📱 **Android मोबाइल** | 👉 **[Download Hisab-Kitab.apk](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)** | फ़ोन के लिए रेडी ऐप (100% ऑफ़लाइन) |
+| 📱 **Android मोबाइल फ़ोन** | 👉 **[Download Hisab-Kitab.apk](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)** | फ़ोन के लिए रेडी ऐप (100% ऑफ़लाइन) |
 | 💻 **Windows कंप्यूटर / लैपटॉप** | 👉 **[Download Hisab-Kitab.exe](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.exe)** | कंप्यूटर पर डबल-क्लिक करके सीधे चलाएं |
-| 🗄️ **DBMS डेटाबेस फ़ाइल** | `hisab_kitab_dbms.json` | सभी खातों और लेन-देन का सुरक्षित डेटाबेस |
+| 🗄️ **DBMS डेटाबेस फ़ाइल** | `hisab_kitab_dbms.json` | सभी खातों और लेन-देन का सुरक्षित स्थानीय डेटाबेस |
 
 ---
 
@@ -26,7 +26,7 @@
 
 1. ऊपर दिए गए **[Download Hisab-Kitab.exe](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.exe)** लिंक से फ़ाइल डाउनलोड करें।
 2. डाउनलोड होने के बाद **`Hisab-Kitab.exe`** पर डबल-क्लिक करें।
-3. यह बिना किसी ब्राउज़र बार के, एक स्टैंडअलोन डेस्कटॉप सॉफ़्टवेयर की तरह खुल जाएगा।
+3. यह बिना किसी ब्राउज़र बार के, एक साफ़-सुथरे स्टैंडअलोन डेस्कटॉप सॉफ़्टवेयर की तरह खुल जाएगा।
 4. कंप्यूटर में किसी इंटरनेट या इंस्टॉलेशन की ज़रूरत नहीं है!
 
 ---
@@ -34,7 +34,7 @@
 ## 📱 मोबाइल फ़ोन में कैसे इनस्टॉल करें?
 
 1. अपने मोबाइल से **[Download Hisab-Kitab.apk](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)** डाउनलोड करें।
-2. डाउनलोड पूरा होने पर फ़ाइल पर टैप करें और **"Install"** दबाएं।
+2. डाउनलोड पूरा होने पर फ़ाइल पर टैप करें और **"Install"** दबाएं (अगर फ़ोन पूछे तो *"Allow from this source"* पर OK कर दें)।
 3. आपके फ़ोन में नए **₹ आइकॉन** के साथ **Hisab Kitab** ऐप आ जाएगा।
 
 ---
@@ -44,9 +44,9 @@
 इस ऐप में आपका सारा डेटा एक विशेष डेटाबेस फ़ाइल में सुरक्षित रहता है जिसे **DBMS फ़ाइल** कहते हैं:
 - **फ़ाइल का नाम:** `hisab_kitab_dbms.json`
 - **विशेषताएं:**
-  - **Relational Tables:** Customers (खाते), Transactions (लेन-देन), Audit Logs (ऑडिट हिस्ट्री), और Settings।
+  - **Relational Structure:** Customers (खाते), Transactions (लेन-देन), Audit Logs (ऑडिट हिस्ट्री), और Settings।
   - **Auto-Sync:** जब भी आप कोई नई एंट्री जोड़ते या बदलते हैं, डेटा तुरंत स्थानीय रूप से सेव हो जाता है।
-  - **1-Click Backup:** ऐप में ऊपर दिए गए **"Export DBMS"** बटन से आप जब चाहें पूरे डेटाबेस की कॉपी अपने पेनड्राइव या गूगल ड्राइव में रख सकते हैं।
+  - **1-Click Export:** ऐप में ऊपर दिए गए **"Export DBMS"** बटन से आप जब चाहें पूरे डेटाबेस की बैकअप कॉपी अपने पेनड्राइव या कंप्यूटर में रख सकते हैं।
   - **Restore / Import:** **"Import DBMS"** से कभी भी अपना पुराना डेटा किसी भी कंप्यूटर या फ़ोन पर वापस लोड कर सकते हैं।
 
 ---
@@ -74,13 +74,12 @@ $$\text{Net Balance} = (\text{Opening Balance}) + \text{Total Credit} - \text{To
 
 ---
 
-## ✨ मुख्य फ़ीचर्स (Key Features)
+## ✨ मुख्य फ़ीचर्स (Key Core Features)
 
-- ⚡ **Jaldi Rakam Chunein (Quick Amount Chips):** `+₹50`, `+₹100`, `+₹500`, `+₹1,000`, `+₹2,000`
-- 🏷️ **Vivaran Tags (Quick Reasons):** `[Chai & Nashta]`, `[Petrol]`, `[Bike Repair]`, `[Kirana Saman]`, `[Cash Diya]`, `[UPI Wapas]`
-- 🤝 **1-Click Hisab Chukta (Settle Account):** एक क्लिक में बकाया हिसाब को बराबर (₹0) करने की एंट्री।
-- 📲 **WhatsApp Reminder:** ग्राहक को तुरंत प्री-फ़ॉर्मेटेड हिसाब मैसेज शेयर करने की सुविधा।
-- 💳 **Payment Modes:** Cash, UPI, Bank Transfer, Udhar टैग।
-- 📄 **Export & Print:** पूरा लेज़र Excel CSV और PDF प्रिंट फॉर्मेट में डाउनलोड करें।
-- 🌗 **Dark Mode & Light Mode:** आँखों के आराम के लिए डार्क थीम।
-- 🔒 **100% ऑफ़लाइन और प्राइवेट:** आपका डेटा कभी किसी बाहरी सर्वर पर नहीं जाता, सिर्फ़ आपके डिवाइस पर रहता है।
+- 👥 **Customer Management:** नया ग्राहक जोड़ना (Name, Phone, Note, Opening Balance Credit/Debit), एडिट करना और सुरक्षित डिलीट करना।
+- 📝 **Fast Transaction Entry:** साफ़ और स्पष्ट `Credit (+)` व `Debit (-)` बटन, Rakam (Amount ₹), Tarikh (Date), और Vivaran (Description)।
+- 📊 **Detailed Ledger Table:** ऑटो-सीरियल नंबर (`#1`, `#2`, `#3`...), Date, Vivaran, Debit (Red), Credit (Green), और **Running Balance** का सटीक हिसाब।
+- 🔍 **Search & Filters:** नाम या फ़ोन से ग्राहक खोजना, लेज़र में एंट्रीज़ खोजना, Date Range फ़िल्टर, और Naya/Purana सॉर्टिंग।
+- 📄 **Export & Print:** पूरा लेज़र Excel CSV और A4 PDF प्रिंट फ़ॉर्मेट में डाउनलोड करने की सुविधा।
+- 🌗 **Dark Mode & Light Mode:** दिन और रात के अनुसार थीम बदलने की सुविधा।
+- 🔒 **100% ऑफ़लाइन और सुरक्षित:** बिना इंटरनेट के आपके डिवाइस पर हमेशा काम करता है।

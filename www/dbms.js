@@ -2,19 +2,17 @@
  * ============================================================================
  * HISAB KITAB - DATABASE MANAGEMENT SYSTEM (DBMS) ENGINE
  * File: dbms.js
- * Version: 2.0.0
+ * Version: 2.1.0
  * 
- * A robust, offline, ACID-inspired Database Management System for local
- * customer ledgers, transaction records, audit logs, and settings.
+ * Clean, structured, local relational DBMS for customer accounts & transactions.
  * ============================================================================
  */
 
 (function (global) {
   'use strict';
 
-  // Constants
   const DB_NAME = 'hisab_kitab_dbms';
-  const DB_VERSION = '2.0.0';
+  const DB_VERSION = '2.1.0';
   const STORAGE_KEY = 'hisab_kitab_dbms_storage_v2';
   const LEGACY_STORAGE_KEY = 'hisab_kitab_ledger_data_v1';
 
@@ -39,26 +37,18 @@
         currency: 'INR',
         currencySymbol: '₹',
         accounting: {
-          creditSign: 1,      // Credit (Mujhe mile) increases what I owe them
-          debitSign: -1,      // Debit (Unhone liye) decreases what I owe them
+          creditSign: 1,      // Credit (Mujhe mile) increases what I owe them (+)
+          debitSign: -1,      // Debit (Unhone liye) decreases what I owe them (-)
           positiveIsOwe: true // Balance > 0 means I owe them (Green)
-        },
-        autoBackupIntervalDays: 7,
-        lastBackupDate: null
+        }
       }
     }
   };
 
-  /**
-   * Helper: Generate unique ID
-   */
   function generateUUID() {
     return 'hk_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 9);
   }
 
-  /**
-   * DBMS Core Class
-   */
   class HisabKitabDBMS {
     constructor() {
       this.data = JSON.parse(JSON.stringify(DEFAULT_SCHEMA));
@@ -66,9 +56,6 @@
       this.listeners = [];
     }
 
-    /**
-     * Subscribe to database state changes
-     */
     onChange(callback) {
       if (typeof callback === 'function') {
         this.listeners.push(callback);
@@ -90,9 +77,6 @@
       });
     }
 
-    /**
-     * Initialize Database from Storage or Seed Data
-     */
     init() {
       try {
         let raw = null;
@@ -110,7 +94,7 @@
           }
         }
 
-        // Check for legacy v1 data migration
+        // Check for legacy v1 migration
         if (typeof localStorage !== 'undefined') {
           const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
           if (legacyRaw) {
@@ -124,7 +108,6 @@
           }
         }
 
-        // Seed with sample data on fresh installation
         this.seedSampleData();
         this.isInitialized = true;
         this.logAudit('DB_SEED', 'Fresh database initialized with sample customer records');
@@ -137,30 +120,27 @@
       }
     }
 
-    /**
-     * Persist Database to Local Storage & File System (if desktop environment available)
-     */
     saveToDisk() {
       try {
         if (typeof localStorage !== 'undefined') {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
         }
 
-        // If running in Windows Desktop WebView2 / C# Host environment, notify host to auto-save file
-        if (typeof window !== 'undefined' && window.chrome && window.chrome.webview) {
-          window.chrome.webview.postMessage({
-            action: 'SAVE_DBMS_FILE',
-            payload: JSON.stringify(this.data, null, 2)
-          });
+        // If running in desktop environment, sync with host API
+        if (typeof window !== 'undefined' && window.location && window.location.origin) {
+          if (window.location.protocol.startsWith('http')) {
+            fetch('/api/save_dbms', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(this.data, null, 2)
+            }).catch(() => {});
+          }
         }
       } catch (e) {
         console.error('[DBMS Save Error]', e);
       }
     }
 
-    /**
-     * Migrate from v1 nested structure to v2 normalized relational schema
-     */
     migrateFromV1(customersV1) {
       this.data = JSON.parse(JSON.stringify(DEFAULT_SCHEMA));
       customersV1.forEach(c => {
@@ -185,7 +165,6 @@
               amount: Number(t.amount) || 0,
               date: t.date || new Date().toISOString().split('T')[0],
               desc: t.desc || '',
-              paymentMode: t.paymentMode || 'Cash',
               createdAt: t.createdAt || Date.now(),
               updatedAt: Date.now()
             });
@@ -195,9 +174,6 @@
       this.saveToDisk();
     }
 
-    /**
-     * Seed realistic sample records
-     */
     seedSampleData() {
       this.data = JSON.parse(JSON.stringify(DEFAULT_SCHEMA));
       const today = new Date().toISOString().split('T')[0];
@@ -243,24 +219,21 @@
       ];
 
       this.data.tables.transactions = [
-        { id: 'tx_b1', customerId: c1Id, type: 'debit', amount: 50, date: past1, desc: 'Chai aur nashta', paymentMode: 'Cash', createdAt: 1 },
-        { id: 'tx_b2', customerId: c1Id, type: 'debit', amount: 1000, date: past2, desc: 'Bike repair & service', paymentMode: 'UPI', createdAt: 2 },
-        { id: 'tx_b3', customerId: c1Id, type: 'debit', amount: 2000, date: past3, desc: 'Grocery & petrol', paymentMode: 'Cash', createdAt: 3 },
-        { id: 'tx_b4', customerId: c1Id, type: 'debit', amount: 1500, date: today, desc: 'Mobile recharge & shopping', paymentMode: 'Online', createdAt: 4 },
+        { id: 'tx_b1', customerId: c1Id, type: 'debit', amount: 50, date: past1, desc: 'Chai aur nashta', createdAt: 1 },
+        { id: 'tx_b2', customerId: c1Id, type: 'debit', amount: 1000, date: past2, desc: 'Bike repair & service', createdAt: 2 },
+        { id: 'tx_b3', customerId: c1Id, type: 'debit', amount: 2000, date: past3, desc: 'Grocery & petrol', createdAt: 3 },
+        { id: 'tx_b4', customerId: c1Id, type: 'debit', amount: 1500, date: today, desc: 'Mobile recharge & shopping', createdAt: 4 },
         
-        { id: 'tx_r1', customerId: c2Id, type: 'credit', amount: 3000, date: past2, desc: 'Cash jama kiya', paymentMode: 'Cash', createdAt: 5 },
-        { id: 'tx_r2', customerId: c2Id, type: 'debit', amount: 1200, date: today, desc: 'Atta, tel & masale', paymentMode: 'Udhar', createdAt: 6 },
+        { id: 'tx_r1', customerId: c2Id, type: 'credit', amount: 3000, date: past2, desc: 'Cash jama kiya', createdAt: 5 },
+        { id: 'tx_r2', customerId: c2Id, type: 'debit', amount: 1200, date: today, desc: 'Atta, tel & masale', createdAt: 6 },
 
-        { id: 'tx_p1', customerId: c3Id, type: 'credit', amount: 10000, date: past1, desc: 'Advance payment mila', paymentMode: 'Bank Transfer', createdAt: 7 },
-        { id: 'tx_p2', customerId: c3Id, type: 'debit', amount: 10000, date: today, desc: 'Saman deliver kiya (Hisab Barabar)', paymentMode: 'Cash', createdAt: 8 }
+        { id: 'tx_p1', customerId: c3Id, type: 'credit', amount: 10000, date: past1, desc: 'Advance payment mila', createdAt: 7 },
+        { id: 'tx_p2', customerId: c3Id, type: 'debit', amount: 10000, date: today, desc: 'Saman deliver kiya (Hisab Barabar)', createdAt: 8 }
       ];
 
       this.saveToDisk();
     }
 
-    /**
-     * Clear sample data & start clean
-     */
     clearAllData() {
       this.data.tables.customers = [];
       this.data.tables.transactions = [];
@@ -268,9 +241,6 @@
       this.notifyChange('CLEAR_ALL', null);
     }
 
-    /**
-     * Audit Log Appender
-     */
     logAudit(action, details) {
       if (!Array.isArray(this.data.tables.audit_logs)) {
         this.data.tables.audit_logs = [];
@@ -281,14 +251,13 @@
         details: typeof details === 'object' ? JSON.stringify(details) : String(details),
         timestamp: new Date().toISOString()
       });
-      // Keep last 250 audit logs
-      if (this.data.tables.audit_logs.length > 250) {
+      if (this.data.tables.audit_logs.length > 200) {
         this.data.tables.audit_logs.pop();
       }
     }
 
     // =========================================================================
-    // CUSTOMER CRUD OPERATIONS
+    // CUSTOMER CRUD
     // =========================================================================
 
     getAllCustomers() {
@@ -316,7 +285,7 @@
       };
 
       this.data.tables.customers.unshift(newCustomer);
-      this.logAudit('CUSTOMER_CREATE', `Created customer: ${newCustomer.name} (ID: ${newCustomer.id})`);
+      this.logAudit('CUSTOMER_CREATE', `Created customer: ${newCustomer.name}`);
       this.notifyChange('CUSTOMER_CREATED', newCustomer);
       return newCustomer;
     }
@@ -353,26 +322,20 @@
       const customer = this.getCustomerById(id);
       if (!customer) return false;
 
-      // Delete cascade all transactions
-      const txCountBefore = this.data.tables.transactions.length;
       this.data.tables.transactions = this.data.tables.transactions.filter(t => t.customerId !== id);
-      const deletedTxCount = txCountBefore - this.data.tables.transactions.length;
-
-      // Delete customer
       this.data.tables.customers = this.data.tables.customers.filter(c => c.id !== id);
 
-      this.logAudit('CUSTOMER_DELETE', `Deleted customer ${customer.name} and ${deletedTxCount} associated transactions`);
+      this.logAudit('CUSTOMER_DELETE', `Deleted customer: ${customer.name}`);
       this.notifyChange('CUSTOMER_DELETED', { customerId: id, name: customer.name });
       return true;
     }
 
     // =========================================================================
-    // TRANSACTION CRUD & ACCOUNTING CALCULATIONS
+    // TRANSACTION CRUD & CALCULATIONS
     // =========================================================================
 
     getCustomerTransactions(customerId) {
       const list = this.data.tables.transactions.filter(t => t.customerId === customerId);
-      // Chronological sort: by date, then createdAt
       list.sort((a, b) => {
         if (a.date !== b.date) return a.date.localeCompare(b.date);
         return (a.createdAt || 0) - (b.createdAt || 0);
@@ -441,7 +404,6 @@
         amount: amount,
         date: txData.date || new Date().toISOString().split('T')[0],
         desc: (txData.desc || '').trim(),
-        paymentMode: txData.paymentMode || 'Cash',
         createdAt: Date.now(),
         updatedAt: Date.now()
       };
@@ -471,9 +433,6 @@
       if (updateData.desc !== undefined) {
         tx.desc = updateData.desc.trim();
       }
-      if (updateData.paymentMode) {
-        tx.paymentMode = updateData.paymentMode;
-      }
       tx.updatedAt = Date.now();
 
       this.logAudit('TRANSACTION_UPDATE', `Updated transaction #${tx.id} (₹${tx.amount})`);
@@ -491,41 +450,15 @@
       return true;
     }
 
-    /**
-     * 1-Click Settle / Hisab Chukta
-     * Generates exact offsetting transaction to bring net balance to ₹0
-     */
-    settleCustomerAccount(customerId, paymentMode = 'Cash', note = 'Hisab Chukta (Settlement)') {
-      const details = this.getCustomerDetails(customerId);
-      if (!details) return null;
-
-      if (details.netBalance === 0) {
-        throw new Error('Hisab pehle se hi barabar hai (Balance is already 0)');
-      }
-
-      // If netBalance > 0 (I owe them), we must record DEBIT to return their money
-      // If netBalance < 0 (They owe me), we must record CREDIT to record payment received
-      const txType = details.netBalance > 0 ? 'debit' : 'credit';
-      const settleAmount = Math.abs(details.netBalance);
-
-      return this.insertTransaction(customerId, {
-        type: txType,
-        amount: settleAmount,
-        date: new Date().toISOString().split('T')[0],
-        desc: note,
-        paymentMode: paymentMode
-      });
-    }
-
     // =========================================================================
-    // OVERALL DASHBOARD & AGGREGATE STATISTICS
+    // DASHBOARD SUMMARY
     // =========================================================================
 
     getDashboardSummary() {
       let totalIOwe = 0;       // Green balance sum
       let totalTheyOwe = 0;    // Red balance sum
-      let totalTransactions = this.data.tables.transactions.length;
-      let totalCustomers = this.data.tables.customers.length;
+      const totalTransactions = this.data.tables.transactions.length;
+      const totalCustomers = this.data.tables.customers.length;
 
       const customerSummaries = this.getAllCustomers();
 
@@ -550,7 +483,7 @@
     }
 
     // =========================================================================
-    // DBMS IMPORT & EXPORT (.JSON DATABASE FILE)
+    // IMPORT / EXPORT (.JSON DATABASE)
     // =========================================================================
 
     exportDatabase() {
@@ -571,7 +504,6 @@
         if (mode === 'replace') {
           this.data = imported;
         } else if (mode === 'merge') {
-          // Merge customers
           const existingCustMap = new Map(this.data.tables.customers.map(c => [c.id, c]));
           imported.tables.customers.forEach(newC => {
             if (!existingCustMap.has(newC.id)) {
@@ -579,7 +511,6 @@
             }
           });
 
-          // Merge transactions
           const existingTxMap = new Map(this.data.tables.transactions.map(t => [t.id, t]));
           if (Array.isArray(imported.tables.transactions)) {
             imported.tables.transactions.forEach(newT => {
@@ -600,7 +531,6 @@
     }
   }
 
-  // Export as Singleton instance
   const dbmsInstance = new HisabKitabDBMS();
 
   if (typeof module !== 'undefined' && module.exports) {

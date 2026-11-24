@@ -75,7 +75,6 @@
       --shadow-lg: 0 12px 20px rgba(0,0,0,0.5);
     }
 
-    /* Base & Reset */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -106,7 +105,6 @@
       transition: all 0.15s ease;
     }
 
-    /* Layout Containers */
     .container {
       max-width: 1140px;
       margin: 0 auto;
@@ -114,7 +112,7 @@
       width: 100%;
     }
 
-    /* Header */
+    /* App Header */
     .app-header {
       background-color: var(--bg-card);
       border-bottom: 1px solid var(--border-color);
@@ -261,12 +259,6 @@
       color: #ffffff;
     }
     .btn-red:hover { opacity: 0.92; }
-
-    .btn-whatsapp {
-      background-color: #25d366;
-      color: #ffffff;
-    }
-    .btn-whatsapp:hover { background-color: #20ba5a; }
 
     .btn-icon {
       width: 38px;
@@ -427,7 +419,7 @@
       border-color: var(--primary);
     }
 
-    /* Customer List Cards Grid */
+    /* Customer Cards Grid */
     .customer-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -712,7 +704,7 @@
       margin-top: 2px;
     }
 
-    /* Quick Entry Form */
+    /* Add Transaction Card */
     .add-tx-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -731,47 +723,14 @@
       gap: 8px;
     }
 
-    /* Quick Amount & Reason Chips */
-    .chips-label {
-      font-size: 0.76rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .quick-chips-row {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-
-    .q-chip {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      background-color: var(--bg-page);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .q-chip:hover {
-      background-color: var(--primary-bg);
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
     .tx-form-grid {
       display: grid;
-      grid-template-columns: auto 1fr 1fr 1fr 2fr auto;
+      grid-template-columns: auto 1fr 1fr 2fr auto;
       gap: 12px;
       align-items: end;
     }
 
-    @media (max-width: 950px) {
+    @media (max-width: 900px) {
       .tx-form-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -814,7 +773,6 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
-    /* Type Selector */
     .tx-type-toggle {
       display: flex;
       border: 1px solid var(--border-color);
@@ -873,7 +831,7 @@
       flex-wrap: wrap;
     }
 
-    /* Table */
+    /* Table Card */
     .table-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -929,20 +887,8 @@
     }
 
     .td-desc {
-      max-width: 280px;
+      max-width: 320px;
       font-weight: 500;
-    }
-
-    .payment-tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background-color: var(--bg-page);
-      border: 1px solid var(--border-color);
-      color: var(--text-muted);
-      margin-top: 3px;
     }
 
     .amount-cell {
@@ -1291,18 +1237,6 @@
       </button>
 
       <div class="header-actions">
-        <!-- WhatsApp Reminder Button -->
-        <button class="btn btn-whatsapp btn-sm" id="btn-whatsapp-reminder" title="Send WhatsApp Payment Reminder">
-          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-          WhatsApp Reminder
-        </button>
-
-        <!-- 1-Click Settle Balance -->
-        <button class="btn btn-green btn-sm" id="btn-settle-balance" title="1-Click Settle / Hisab Barabar">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
-          Hisab Chukta Karein
-        </button>
-
         <!-- Print / PDF -->
         <button class="btn btn-secondary btn-sm" id="btn-print-account">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-10 0v4h8v-4"></path></svg>
@@ -1392,29 +1326,6 @@
         Naya Hisab Jodein (New Transaction)
       </h3>
 
-      <!-- Quick Amount & Reason Chips -->
-      <div style="margin-bottom:12px;">
-        <div class="chips-label">⚡ Jaldi Rakam Chunein (Quick Amounts):</div>
-        <div class="quick-chips-row">
-          <button type="button" class="q-chip" data-quick-amt="50">+₹50</button>
-          <button type="button" class="q-chip" data-quick-amt="100">+₹100</button>
-          <button type="button" class="q-chip" data-quick-amt="500">+₹500</button>
-          <button type="button" class="q-chip" data-quick-amt="1000">+₹1,000</button>
-          <button type="button" class="q-chip" data-quick-amt="2000">+₹2,000</button>
-          <button type="button" class="q-chip" data-quick-amt="5000">+₹5,000</button>
-        </div>
-
-        <div class="chips-label">🏷️ Vivaran (Frequent Reasons):</div>
-        <div class="quick-chips-row">
-          <button type="button" class="q-chip" data-quick-reason="Chai & Nashta">Chai & Nashta</button>
-          <button type="button" class="q-chip" data-quick-reason="Petrol / Fuel">Petrol</button>
-          <button type="button" class="q-chip" data-quick-reason="Bike / Gaadi Repair">Bike Repair</button>
-          <button type="button" class="q-chip" data-quick-reason="Ration & Kirana">Kirana Saman</button>
-          <button type="button" class="q-chip" data-quick-reason="Cash Diya">Cash Diya</button>
-          <button type="button" class="q-chip" data-quick-reason="UPI / Online Wapas">UPI Wapas</button>
-        </div>
-      </div>
-
       <form id="form-quick-add-tx" onsubmit="return false;">
         <div class="tx-form-grid">
           <!-- Type (Credit / Debit) -->
@@ -1442,17 +1353,6 @@
           <div class="form-group">
             <label class="form-label" for="tx-input-date">Tarikh (Date) *</label>
             <input type="date" class="form-control" id="tx-input-date" required>
-          </div>
-
-          <!-- Payment Mode -->
-          <div class="form-group">
-            <label class="form-label" for="tx-input-mode">Mode</label>
-            <select class="form-control" id="tx-input-mode">
-              <option value="Cash">Cash</option>
-              <option value="UPI">UPI</option>
-              <option value="Bank">Bank Transfer</option>
-              <option value="Udhar">Udhar</option>
-            </select>
           </div>
 
           <!-- Description -->
@@ -1552,7 +1452,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="modal-cust-phone">Mobile / WhatsApp Number</label>
+            <label class="form-label" for="modal-cust-phone">Mobile / Phone Number</label>
             <input type="tel" class="form-control" id="modal-cust-phone" placeholder="e.g. 9876543210">
           </div>
 
@@ -1621,16 +1521,6 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="modal-edit-mode">Payment Mode</label>
-            <select class="form-control" id="modal-edit-mode">
-              <option value="Cash">Cash</option>
-              <option value="UPI">UPI</option>
-              <option value="Bank">Bank Transfer</option>
-              <option value="Udhar">Udhar</option>
-            </select>
-          </div>
-
-          <div class="form-group">
             <label class="form-label" for="modal-edit-desc">Vivaran (Description / Reason)</label>
             <input type="text" class="form-control" id="modal-edit-desc">
           </div>
@@ -1674,7 +1564,7 @@
         <div style="background:var(--bg-page); padding:12px 14px; border-radius:8px; font-size:0.86rem; border:1px solid var(--border-color);">
           <strong>DBMS Status:</strong> <span style="color:var(--green-main); font-weight:700;">Active & Synced</span><br>
           • <strong>Local Database File:</strong> <code>hisab_kitab_dbms.json</code><br>
-          • <strong>Engine:</strong> Relational Khata DBMS v2.0 (ACID compliant)<br>
+          • <strong>Engine:</strong> Relational Khata DBMS v2.1<br>
           • <strong>Audit Trail:</strong> Auto-logged actions (Insert, Update, Delete)
         </div>
 
@@ -1798,7 +1688,6 @@
         netElem.className = 'stat-value val-neutral';
       }
 
-      // Filter
       const q = appState.searchQuery.trim().toLowerCase();
       const filtered = summary.customerSummaries.filter(c => {
         const matchName = c.name.toLowerCase().includes(q);
@@ -1881,7 +1770,6 @@
       document.getElementById('view-customer').classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Reset transaction form
       document.getElementById('tx-input-amount').value = '';
       document.getElementById('tx-input-desc').value = '';
       document.getElementById('tx-input-date').value = getTodayDateString();
@@ -1904,7 +1792,6 @@
       document.getElementById('acct-cust-note').textContent = details.note ? `📝 ${details.note}` : '📝 No note';
       document.getElementById('acct-cust-created').textContent = `🗓️ Shuru: ${formatDateReadable(new Date(details.createdAt || Date.now()).toISOString().split('T')[0])}`;
 
-      // Net Banner
       const netBanner = document.getElementById('acct-net-banner');
       const netLabel = document.getElementById('acct-net-label');
       const netAmount = document.getElementById('acct-net-amount');
@@ -1928,7 +1815,6 @@
         netExp.textContent = 'Hisab barabar hai. Koi lena-dena baaki nahi hai.';
       }
 
-      // Summary subcards
       const opDirText = details.openingBalance > 0 
         ? (details.openingBalanceType === 'credit' ? 'Credit (Mujhe Mile The)' : 'Debit (Unhone Liye The)') 
         : 'Zero Opening';
@@ -1937,7 +1823,6 @@
       document.getElementById('acct-sum-credit').textContent = formatINR(details.totalCredit);
       document.getElementById('acct-sum-debit').textContent = formatINR(details.totalDebit);
 
-      // Filter transactions
       const search = appState.txSearchQuery.toLowerCase().trim();
       let displayTx = details.processedTransactions.filter(tx => {
         const matchDesc = (tx.desc || '').toLowerCase().includes(search);
@@ -2009,7 +1894,6 @@
               <td class="td-date">${formatDateReadable(tx.date)}</td>
               <td class="td-desc">
                 ${tx.desc ? tx.desc : '<span style="color:var(--text-light); font-style:italic;">No description</span>'}
-                ${tx.paymentMode ? `<div class="payment-tag">${tx.paymentMode}</div>` : ''}
               </td>
               <td style="text-align:right;" class="amount-cell ${!isCredit ? 'amount-debit' : ''}">
                 ${!isCredit ? '- ' + formatINR(tx.amount) : '-'}
@@ -2058,7 +1942,7 @@
     }
 
     // =========================================================================
-    // QUICK TRANSACTION CONTROLS
+    // TRANSACTION CONTROLS
     // =========================================================================
     let quickTxSelectedType = 'credit';
     function setQuickTxType(type) {
@@ -2079,13 +1963,11 @@
 
       const amtInput = document.getElementById('tx-input-amount');
       const dateInput = document.getElementById('tx-input-date');
-      const modeInput = document.getElementById('tx-input-mode');
       const descInput = document.getElementById('tx-input-desc');
 
       const amount = parseFloat(amtInput.value);
       const date = dateInput.value;
       const desc = descInput.value.trim();
-      const mode = modeInput.value;
 
       if (!amount || amount <= 0) {
         showToast('Kripya sahi rakam (amount > 0) dalein.', 'error');
@@ -2103,85 +1985,16 @@
           type: quickTxSelectedType,
           amount: amount,
           date: date,
-          desc: desc,
-          paymentMode: mode
+          desc: desc
         });
 
         amtInput.value = '';
         descInput.value = '';
         amtInput.focus();
-        showToast(`${quickTxSelectedType === 'credit' ? 'Credit (+)' : 'Debit (-)'} ₹${amount} hisab me jod diya gaya.`, 'success');
+        showToast(`${quickTxSelectedType === 'credit' ? 'Credit (+)' : 'Debit (-)'} ₹${amount} jod diya gaya.`, 'success');
       } catch (err) {
         showToast(err.message, 'error');
       }
-    }
-
-    // Quick Chips Listeners
-    function setupQuickChips() {
-      document.querySelectorAll('[data-quick-amt]').forEach(chip => {
-        chip.addEventListener('click', () => {
-          const amt = chip.getAttribute('data-quick-amt');
-          const input = document.getElementById('tx-input-amount');
-          input.value = (parseFloat(input.value) || 0) + parseFloat(amt);
-          input.focus();
-        });
-      });
-
-      document.querySelectorAll('[data-quick-reason]').forEach(chip => {
-        chip.addEventListener('click', () => {
-          const reason = chip.getAttribute('data-quick-reason');
-          const input = document.getElementById('tx-input-desc');
-          input.value = input.value ? input.value + ', ' + reason : reason;
-          input.focus();
-        });
-      });
-    }
-
-    // 1-Click Settle
-    function handleSettleAccount() {
-      if (!appState.activeCustomerId) return;
-      const details = DBMS.getCustomerDetails(appState.activeCustomerId);
-      if (!details || details.netBalance === 0) {
-        showToast('Hisab pehle se barabar hai (Balance ₹0).', 'normal');
-        return;
-      }
-
-      const confirmMsg = `Kya aap sach me ${details.name} ka bacha hua ${formatINR(Math.abs(details.netBalance))} hisab chukta (settle) karke ₹0 karna chahte hain?`;
-      if (confirm(confirmMsg)) {
-        try {
-          DBMS.settleCustomerAccount(appState.activeCustomerId, 'Cash', 'Hisab Chukta (Settlement)');
-          showToast('Hisab safaltapurvak chukta (Barabar ₹0) kar diya gaya!', 'success');
-        } catch (err) {
-          showToast(err.message, 'error');
-        }
-      }
-    }
-
-    // WhatsApp Reminder
-    function handleWhatsAppReminder() {
-      if (!appState.activeCustomerId) return;
-      const details = DBMS.getCustomerDetails(appState.activeCustomerId);
-      if (!details) return;
-
-      let msg = `*Namaste ${details.name} ji,*%0A%0A`;
-      msg += `Aapka *Hisab Kitab (Ledger)* vivaran:%0A`;
-      if (details.netBalance > 0) {
-        msg += `🟢 *Mujhe aapko dene hain:* ${formatINR(details.netBalance)}%0A`;
-      } else if (details.netBalance < 0) {
-        msg += `🔴 *Aap se lene bache hain:* ${formatINR(Math.abs(details.netBalance))}%0A`;
-      } else {
-        msg += `⚖️ *Hisab Barabar hai:* ₹0%0A`;
-      }
-      msg += `🗓️ Tarikh: ${new Date().toLocaleDateString('en-IN')}%0A%0A`;
-      msg += `Kripya check kar lein. Dhanyawad!`;
-
-      const cleanPhone = (details.phone || '').replace(/[^0-9]/g, '');
-      const waUrl = cleanPhone 
-        ? `https://wa.me/91${cleanPhone}?text=${msg}`
-        : `https://wa.me/?text=${msg}`;
-
-      window.open(waUrl, '_blank');
-      showToast('WhatsApp reminder khol diya gaya.', 'success');
     }
 
     // =========================================================================
@@ -2208,7 +2021,6 @@
       document.getElementById('edit-tx-id').value = tx.id;
       document.getElementById('modal-edit-amount').value = tx.amount;
       document.getElementById('modal-edit-date').value = tx.date;
-      document.getElementById('modal-edit-mode').value = tx.paymentMode || 'Cash';
       document.getElementById('modal-edit-desc').value = tx.desc || '';
       setEditTxType(tx.type);
 
@@ -2219,7 +2031,6 @@
       const txId = document.getElementById('edit-tx-id').value;
       const amount = parseFloat(document.getElementById('modal-edit-amount').value);
       const date = document.getElementById('modal-edit-date').value;
-      const mode = document.getElementById('modal-edit-mode').value;
       const desc = document.getElementById('modal-edit-desc').value.trim();
 
       if (!amount || amount <= 0 || !date) {
@@ -2232,7 +2043,6 @@
           type: editTxSelectedType,
           amount: amount,
           date: date,
-          paymentMode: mode,
           desc: desc
         });
         closeModal('modal-edit-tx');
@@ -2369,17 +2179,17 @@
       csv += `HISAB KITAB - STATEMENT OF ACCOUNT\n`;
       csv += `Customer,${details.name}\nPhone,${details.phone || '-'}\nDate,${getTodayDateString()}\n`;
       csv += `Net Balance,${details.netBalance > 0 ? 'Mujhe dene hain ' + details.netBalance : 'Mujhe lene hain ' + Math.abs(details.netBalance)}\n\n`;
-      csv += `No,Date,Description,Payment Mode,Debit,Credit,Running Balance\n`;
+      csv += `No,Date,Description,Debit,Credit,Running Balance\n`;
 
       if (details.openingBalance > 0) {
-        csv += `0,Opening,Opening Balance,-,${details.openingBalanceType === 'debit' ? details.openingBalance : 0},${details.openingBalanceType === 'credit' ? details.openingBalance : 0},${details.openingContribution}\n`;
+        csv += `0,Opening,Opening Balance,${details.openingBalanceType === 'debit' ? details.openingBalance : 0},${details.openingBalanceType === 'credit' ? details.openingBalance : 0},${details.openingContribution}\n`;
       }
 
       details.processedTransactions.forEach(t => {
         const cleanDesc = `"${(t.desc || '').replace(/"/g, '""')}"`;
         const debit = t.type === 'debit' ? t.amount : 0;
         const credit = t.type === 'credit' ? t.amount : 0;
-        csv += `${t.serialNo},${t.date},${cleanDesc},${t.paymentMode || 'Cash'},${debit},${credit},${t.runningBalance}\n`;
+        csv += `${t.serialNo},${t.date},${cleanDesc},${debit},${credit},${t.runningBalance}\n`;
       });
 
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -2393,7 +2203,6 @@
       showToast('CSV download ho gayi.', 'success');
     }
 
-    // Modals
     function openModal(id) {
       const m = document.getElementById(id);
       if (m) m.classList.add('open');
@@ -2403,7 +2212,6 @@
       if (m) m.classList.remove('open');
     }
 
-    // Theme
     function initTheme() {
       const saved = localStorage.getItem('hisab_kitab_theme') || 'light';
       setTheme(saved);
@@ -2430,9 +2238,7 @@
       DBMS.init();
       DBMS.onChange(() => renderAll());
       renderAll();
-      setupQuickChips();
 
-      // Brand Click
       document.getElementById('brand-logo').addEventListener('click', (e) => {
         e.preventDefault();
         document.getElementById('view-customer').classList.remove('active');
@@ -2441,7 +2247,6 @@
         renderDashboard();
       });
 
-      // Back Button
       document.getElementById('btn-back-to-dashboard').addEventListener('click', () => {
         document.getElementById('view-customer').classList.remove('active');
         document.getElementById('view-dashboard').classList.add('active');
@@ -2449,13 +2254,11 @@
         renderDashboard();
       });
 
-      // Theme toggle
       document.getElementById('theme-toggle').addEventListener('click', () => {
         const cur = document.documentElement.getAttribute('data-theme') || 'light';
         setTheme(cur === 'dark' ? 'light' : 'dark');
       });
 
-      // Clear Sample Data
       document.getElementById('btn-clear-sample').addEventListener('click', () => {
         if (confirm('Kya aap sach me sample data saaf karna chahte hain?')) {
           DBMS.clearAllData();
@@ -2464,13 +2267,11 @@
         }
       });
 
-      // Search Customers
       document.getElementById('search-customer-input').addEventListener('input', (e) => {
         appState.searchQuery = e.target.value;
         renderDashboard();
       });
 
-      // Filter Chips
       document.querySelectorAll('.filter-chips .chip').forEach(chip => {
         chip.addEventListener('click', () => {
           document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
@@ -2480,28 +2281,20 @@
         });
       });
 
-      // Customer Modal
       document.getElementById('btn-open-add-customer').addEventListener('click', openAddCustomerModal);
       document.getElementById('btn-empty-add-customer').addEventListener('click', openAddCustomerModal);
       document.getElementById('btn-edit-customer-profile').addEventListener('click', openEditCustomerModal);
       document.getElementById('btn-delete-customer').addEventListener('click', confirmDeleteCustomer);
       document.getElementById('form-customer').addEventListener('submit', handleSaveCustomer);
 
-      // Quick Add Transaction
       document.getElementById('toggle-type-credit').addEventListener('click', () => setQuickTxType('credit'));
       document.getElementById('toggle-type-debit').addEventListener('click', () => setQuickTxType('debit'));
       document.getElementById('form-quick-add-tx').addEventListener('submit', handleAddQuickTx);
 
-      // Settle & WhatsApp Buttons
-      document.getElementById('btn-settle-balance').addEventListener('click', handleSettleAccount);
-      document.getElementById('btn-whatsapp-reminder').addEventListener('click', handleWhatsAppReminder);
-
-      // Edit Transaction Modal
       document.getElementById('modal-edit-toggle-credit').addEventListener('click', () => setEditTxType('credit'));
       document.getElementById('modal-edit-toggle-debit').addEventListener('click', () => setEditTxType('debit'));
       document.getElementById('form-edit-tx').addEventListener('submit', handleSaveEditTx);
 
-      // Table Toolbar
       document.getElementById('tx-table-search').addEventListener('input', (e) => {
         appState.txSearchQuery = e.target.value;
         renderCustomerAccount();
@@ -2536,7 +2329,6 @@
         renderCustomerAccount();
       });
 
-      // DBMS & Backup Actions
       document.getElementById('btn-export-backup').addEventListener('click', exportDBMSFile);
       document.getElementById('btn-import-backup').addEventListener('click', () => {
         document.getElementById('import-file-input').click();
@@ -2567,7 +2359,6 @@
         window.print();
       });
 
-      // Confirm Delete
       document.getElementById('btn-confirm-delete-action').addEventListener('click', () => {
         if (typeof appState.pendingDeleteAction === 'function') {
           appState.pendingDeleteAction();
@@ -2576,7 +2367,6 @@
         closeModal('modal-delete-confirm');
       });
 
-      // Close Modals
       document.querySelectorAll('[data-close-modal]').forEach(b => {
         b.addEventListener('click', (e) => {
           const backdrop = e.target.closest('.modal-backdrop');
