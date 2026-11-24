@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Mobile APK & Desktop EXE
 
 on:
   push:
@@ -9,10 +9,9 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Generate Android APK
+  build-android:
+    name: Build Android APK
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -45,8 +44,7 @@ jobs:
           ./gradlew assembleDebug --stacktrace
 
       - name: Prepare APK File
-        run: |
-          cp android/app/build/outputs/apk/debug/app-debug.apk Hisab-Kitab.apk
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk Hisab-Kitab.apk
 
       - name: Upload APK to Actions Artifacts
         uses: actions/upload-artifact@v4
@@ -55,15 +53,61 @@ jobs:
           path: Hisab-Kitab.apk
           retention-days: 30
 
+  build-windows:
+    name: Build Windows Desktop EXE
+    runs-on: windows-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate Icon and Compile EXE
+        run: |
+          node create_valid_ico.js
+          & "C:\Windows\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /target:winexe /out:Hisab-Kitab.exe /win32icon:icon.ico /reference:System.Windows.Forms.dll /reference:System.Drawing.dll HisabKitabDesktop.cs
+
+      - name: Upload Windows EXE to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hisab-Kitab-Windows-EXE
+          path: Hisab-Kitab.exe
+          retention-days: 30
+
+  release:
+    name: Publish GitHub Release (APK & EXE)
+    needs: [build-android, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Android APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Hisab-Kitab-Android-APK
+
+      - name: Download Windows EXE Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Hisab-Kitab-Windows-EXE
+
       - name: Publish Direct Download Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v1.0.0"
-          name: "Hisab Kitab Mobile App (v1.0.0)"
+          name: "Hisab Kitab (Mobile & Desktop App v1.0.0)"
           body: |
-            ### 📱 Hisab Kitab Android Mobile App
-            Neeche diye gaye direct link par click karke APK download karein:
-            - **[Hisab-Kitab.apk](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)**
-          files: Hisab-Kitab.apk
+            ### 🚀 Hisab Kitab - Official Release
+            Neeche diye gaye direct links se download karein:
+            - 📱 **Android Mobile APK:** [Hisab-Kitab.apk](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)
+            - 💻 **Windows Computer EXE:** [Hisab-Kitab.exe](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.exe)
+            - 🗄️ **DBMS Local Database:** `hisab_kitab_dbms.json`
+          files: |
+            Hisab-Kitab.apk
+            Hisab-Kitab.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

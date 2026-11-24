@@ -1,102 +1,86 @@
-# 📒 Hisab Kitab (हिसाब किताब) - Offline Daily Ledger
+# 📒 Hisab Kitab (हिसाब किताब) - Offline Daily Ledger & DBMS
 
 <p align="center">
   <a href="https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk">
-    <img src="https://img.shields.io/badge/📲_Direct_Download-Hisab--Kitab.apk-brightgreen?style=for-the-badge&logo=android" alt="Download Android APK" height="50">
+    <img src="https://img.shields.io/badge/📱_Download-Android_APK-brightgreen?style=for-the-badge&logo=android" alt="Download Android APK" height="48">
+  </a>
+  &nbsp;&nbsp;
+  <a href="https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.exe">
+    <img src="https://img.shields.io/badge/💻_Download-Windows_EXE-blue?style=for-the-badge&logo=windows" alt="Download Windows EXE" height="48">
   </a>
 </p>
 
-### 📥 [यहाँ क्लिक करके सीधे APK डाउनलोड करें (Direct Download APK)](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)
+---
 
-> **📱 मोबाइल में इनस्टॉल कैसे करें:**
-> 1. ऊपर दिए गए **हरे रंग के बटन** या **Direct Download लिंक** पर क्लिक करें।
-> 2. `Hisab-Kitab.apk` फ़ाइल आपके फ़ोन में डाउनलोड हो जाएगी।
-> 3. फ़ाइल पर क्लिक करें और **"Install"** दबाएं।
-> 4. यह ऐप आपके फ़ोन में हमेशा के लिए **100% ऑफ़लाइन** काम करेगा (बिना इंटरनेट के)!
+### ⬇️ सीधे डाउनलोड करें (Direct Download Links):
+
+| प्लेटफ़ॉर्म | डाउनलोड लिंक | विवरण |
+| :--- | :--- | :--- |
+| 📱 **Android मोबाइल** | 👉 **[Download Hisab-Kitab.apk](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)** | फ़ोन के लिए रेडी ऐप (100% ऑफ़लाइन) |
+| 💻 **Windows कंप्यूटर / लैपटॉप** | 👉 **[Download Hisab-Kitab.exe](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.exe)** | कंप्यूटर पर डबल-क्लिक करके सीधे चलाएं |
+| 🗄️ **DBMS डेटाबेस फ़ाइल** | `hisab_kitab_dbms.json` | सभी खातों और लेन-देन का सुरक्षित डेटाबेस |
 
 ---
 
 ## 💻 कंप्यूटर / लैपटॉप पर कैसे चलाएं?
 
-कंप्यूटर पर चलाने के लिए किसी इंस्टॉलेशन या इंटरनेट की ज़रूरत नहीं है:
-1. इस रिपॉजिटरी की `index.html` फ़ाइल डाउनलोड करें।
-2. उस पर डबल-क्लिक करें — यह तुरंत Google Chrome, Edge, या Firefox में खुल जाएगी।
+1. ऊपर दिए गए **[Download Hisab-Kitab.exe](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.exe)** लिंक से फ़ाइल डाउनलोड करें।
+2. डाउनलोड होने के बाद **`Hisab-Kitab.exe`** पर डबल-क्लिक करें।
+3. यह बिना किसी ब्राउज़र बार के, एक स्टैंडअलोन डेस्कटॉप सॉफ़्टवेयर की तरह खुल जाएगा।
+4. कंप्यूटर में किसी इंटरनेट या इंस्टॉलेशन की ज़रूरत नहीं है!
 
 ---
 
-## 💡 Accounting & Balance Rules
+## 📱 मोबाइल फ़ोन में कैसे इनस्टॉल करें?
 
-यह लेज़र आपके दैनिक लेन-देन के हिसाब से काम करता है:
+1. अपने मोबाइल से **[Download Hisab-Kitab.apk](https://github.com/AmanC52/Hisab-KItab/releases/download/v1.0.0/Hisab-Kitab.apk)** डाउनलोड करें।
+2. डाउनलोड पूरा होने पर फ़ाइल पर टैप करें और **"Install"** दबाएं।
+3. आपके फ़ोन में नए **₹ आइकॉन** के साथ **Hisab Kitab** ऐप आ जाएगा।
 
-### 1. Meaning of Credit & Debit
-| Type | Hindi Meaning | Explanation | Effect on Balance |
-| :--- | :--- | :--- | :--- |
-| **🟢 CREDIT** | **Mujhe Mile** | Money received by me from the customer (unhone mujhe diye ya wapas kiye) | **Increases** what I owe them (+) |
-| **🔴 DEBIT** | **Unhone Liye** | Money taken by the customer from me (unhone mujhse liye ya kharch karwaye) | **Decreases** what I owe them (-) |
+---
 
-### 2. Balance Formula
+## 🗄️ DBMS (Database Management System) क्या है और डेटा कहाँ रहता है?
+
+इस ऐप में आपका सारा डेटा एक विशेष डेटाबेस फ़ाइल में सुरक्षित रहता है जिसे **DBMS फ़ाइल** कहते हैं:
+- **फ़ाइल का नाम:** `hisab_kitab_dbms.json`
+- **विशेषताएं:**
+  - **Relational Tables:** Customers (खाते), Transactions (लेन-देन), Audit Logs (ऑडिट हिस्ट्री), और Settings।
+  - **Auto-Sync:** जब भी आप कोई नई एंट्री जोड़ते या बदलते हैं, डेटा तुरंत स्थानीय रूप से सेव हो जाता है।
+  - **1-Click Backup:** ऐप में ऊपर दिए गए **"Export DBMS"** बटन से आप जब चाहें पूरे डेटाबेस की कॉपी अपने पेनड्राइव या गूगल ड्राइव में रख सकते हैं।
+  - **Restore / Import:** **"Import DBMS"** से कभी भी अपना पुराना डेटा किसी भी कंप्यूटर या फ़ोन पर वापस लोड कर सकते हैं।
+
+---
+
+## 💡 लेन-देन के नियम (Credit / Debit Accounting Rules)
+
+| प्रकार | हिंदी अर्थ | खाते के बैलेंस पर असर |
+| :--- | :--- | :--- |
+| **🟢 CREDIT** | **मुझे मिले** (ग्राहक/भाई ने मुझे पैसे दिए या वापस किए) | **बैलेंस बढ़ता है (+)** (मुझे उनको देने हैं) |
+| **🔴 DEBIT** | **उन्होंने लिए** (ग्राहक/भाई ने मुझसे पैसे लिए या खर्च करवाए) | **बैलेंस घटता है (-)** (उनसे मुझे लेने हैं) |
+
+### नेट बैलेंस फॉर्मूला:
 $$\text{Net Balance} = (\text{Opening Balance}) + \text{Total Credit} - \text{Total Debit}$$
 
-- **Positive Balance ($> 0$) 🟢 GREEN**: **"Mujhe unko dene hain ₹X"** (They gave you more than they took).
-- **Negative Balance ($< 0$) 🔴 RED**: **"Unse mujhe lene hain ₹X"** (They took more than they gave).
-- **Zero Balance ($= 0$) ⚖️ GRAY**: **"Hisab Barabar"** (Account is settled).
+- **Positive ($> 0$) 🟢 GREEN:** **"मुझे उनको देने हैं ₹X"** *(उन्होंने मुझे ज़्यादा दिए थे)*
+- **Negative ($< 0$) 🔴 RED:** **"उनसे मुझे लेने हैं ₹X"** *(उन्होंने मुझसे ज़्यादा ले लिए हैं)*
+- **Zero ($= 0$) ⚖️ GRAY:** **"हिसाब बराबर"** *(खाता चुकता हो चुका है)*
 
-### 3. Brother Example Walkthrough
-1. Brother gives you ₹50,000 first $\rightarrow$ **Opening Credit of ₹50,000**.
-2. Brother takes ₹50 (Chai) $\rightarrow$ **Debit ₹50** $\rightarrow$ Running Balance: **₹49,950** (Mujhe dene hain).
-3. Brother takes ₹1,000 (Bike repair) $\rightarrow$ **Debit ₹1,000** $\rightarrow$ Running Balance: **₹48,950**.
-4. Brother takes ₹2,000 (Grocery) $\rightarrow$ **Debit ₹2,000** $\rightarrow$ Running Balance: **₹46,950**.
-5. Brother takes ₹1,500 (Recharge) $\rightarrow$ **Debit ₹1,500** $\rightarrow$ Running Balance: **₹45,450** (🟢 Mujhe unko dene hain).
-
----
-
-## ✨ Features
-
-- **Home Dashboard**:
-  - Overview cards: *Kul Dene Hain* (🟢 Green), *Kul Lene Hain* (🔴 Red), *Total Customers*, and *Net Difference*.
-  - Search box by customer name, phone, or notes.
-  - Filter chips: *Sabhi*, *Dene Hain*, *Lene Hain*, *Barabar*.
-  - Customer cards with quick avatar, transaction count, and large color-coded balance badges.
-
-- **Customer Ledger Page**:
-  - Full breadcrumb and back navigation.
-  - Big 4-card summary: Opening Balance, Kul Credit, Kul Debit, and Net Balance banner.
-  - Fast inline transaction entry form with 1-click **Credit (+)** and **Debit (-)** toggles.
-  - Auto-incrementing serial number per customer (`#1`, `#2`, `#3`...).
-  - Running balance calculated chronologically for each entry.
-  - Sort order toggle: **Newest First** ⬇️ or **Oldest First** ⬆️.
-  - Filters: Search in vivaran/amount, filter by type (Credit/Debit), and filter by date range.
-  - Edit ✏️ and Delete 🗑️ with safety confirmation modals.
-
-- **Backup & Portability**:
-  - **Export Backup (JSON)**: Saves your entire database into a single `.json` file that you can keep in Google Drive, email, or a USB flash drive.
-  - **Import Backup**: Restore anytime with options to either **Replace** or **Merge** records.
-  - **Export CSV**: Download an Excel-compatible CSV file for any individual customer statement.
-  - **Print / PDF**: Clean, print-ready formal A4 statement formatted with `@media print`.
-
-- **Design & Quality**:
-  - Indian currency formatting (`₹1,50,000`).
-  - Dark mode and light mode with instant toggle.
-  - 100% offline (no external fonts, scripts, or icons needed; pure SVG).
-  - Preloaded with realistic sample data to test, plus a one-click **Clear Sample Data** button.
+#### भाई वाला उदाहरण (Brother's Example Walkthrough):
+1. भाई ने शुरू में ₹50,000 दिए $\rightarrow$ **Opening Credit ₹50,000** (🟢 *मुझे देने हैं ₹50,000*)
+2. चाय और नाश्ता $\rightarrow$ **Debit ₹50** $\rightarrow$ बकाया बैलेंस: **₹49,950**
+3. बाइक रिपेयर $\rightarrow$ **Debit ₹1,000** $\rightarrow$ बकाया बैलेंस: **₹48,950**
+4. राशन व पेट्रोल $\rightarrow$ **Debit ₹2,000** $\rightarrow$ बकाया बैलेंस: **₹46,950**
+5. मोबाइल रीचार्ज $\rightarrow$ **Debit ₹1,500** $\rightarrow$ बकाया बैलेंस: **₹45,450** (🟢 *मुझे उनको देने हैं ₹45,450*)
 
 ---
 
-## ⚙️ Customizing Accounting Logic
+## ✨ मुख्य फ़ीचर्स (Key Features)
 
-If you ever want to change the labels or reverse the signs, open `index.html` in Notepad or any text editor and edit the `ACCOUNTING_CONFIG` block at lines 730–748:
-
-```javascript
-const ACCOUNTING_CONFIG = {
-  creditMultiplier: 1,    // Credit increases what I owe them (+1)
-  debitMultiplier: -1,   // Debit decreases what I owe them (-1)
-  openingCreditMultiplier: 1,
-  openingDebitMultiplier: -1,
-
-  labelCredit: "Credit (Mujhe Mile)",
-  labelDebit: "Debit (Unhone Liye)",
-  labelIOwe: "Mujhe unko dene hain",
-  labelTheyOwe: "Unse mujhe lene hain",
-  labelSettled: "Hisab Barabar"
-};
-```
+- ⚡ **Jaldi Rakam Chunein (Quick Amount Chips):** `+₹50`, `+₹100`, `+₹500`, `+₹1,000`, `+₹2,000`
+- 🏷️ **Vivaran Tags (Quick Reasons):** `[Chai & Nashta]`, `[Petrol]`, `[Bike Repair]`, `[Kirana Saman]`, `[Cash Diya]`, `[UPI Wapas]`
+- 🤝 **1-Click Hisab Chukta (Settle Account):** एक क्लिक में बकाया हिसाब को बराबर (₹0) करने की एंट्री।
+- 📲 **WhatsApp Reminder:** ग्राहक को तुरंत प्री-फ़ॉर्मेटेड हिसाब मैसेज शेयर करने की सुविधा।
+- 💳 **Payment Modes:** Cash, UPI, Bank Transfer, Udhar टैग।
+- 📄 **Export & Print:** पूरा लेज़र Excel CSV और PDF प्रिंट फॉर्मेट में डाउनलोड करें।
+- 🌗 **Dark Mode & Light Mode:** आँखों के आराम के लिए डार्क थीम।
+- 🔒 **100% ऑफ़लाइन और प्राइवेट:** आपका डेटा कभी किसी बाहरी सर्वर पर नहीं जाता, सिर्फ़ आपके डिवाइस पर रहता है।

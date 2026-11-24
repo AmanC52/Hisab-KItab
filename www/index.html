@@ -2,57 +2,59 @@
 <html lang="hi" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hisab Kitab (हिसाब किताब) - Offline Daily Ledger</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hisab Kitab (हिसाब किताब) - Offline Daily Ledger & DBMS</title>
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
   <style>
     /* ==========================================================================
        CSS Variables & Theme Definitions (Light & Dark Mode)
        ========================================================================== */
     :root {
-      --bg-page: #f4f6f9;
+      --bg-page: #f8fafc;
       --bg-card: #ffffff;
       --bg-input: #ffffff;
-      --bg-card-hover: #f8fafc;
-      --text-main: #1e293b;
+      --bg-card-hover: #f1f5f9;
+      --text-main: #0f172a;
       --text-muted: #64748b;
       --text-light: #94a3b8;
       --border-color: #e2e8f0;
-      --border-focus: #3b82f6;
+      --border-focus: #2563eb;
 
-      /* Credit / Green colors (I received / I owe) */
+      /* Credit / Green (I received / I owe them) */
       --green-main: #16a34a;
       --green-bg: #ecfdf5;
       --green-border: #a7f3d0;
       --green-text: #065f46;
 
-      /* Debit / Red colors (They took / They owe) */
+      /* Debit / Red (They took / They owe me) */
       --red-main: #dc2626;
       --red-bg: #fef2f2;
       --red-border: #fecaca;
       --red-text: #991b1b;
 
-      /* Neutral / Blue / Accents */
+      /* Brand Accents */
       --primary: #2563eb;
       --primary-hover: #1d4ed8;
       --primary-bg: #eff6ff;
       --primary-text: #1e40af;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
-      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.05);
-      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05);
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -4px rgba(0,0,0,0.03);
       --radius: 12px;
       --radius-sm: 8px;
     }
 
     [data-theme="dark"] {
-      --bg-page: #0f172a;
-      --bg-card: #1e293b;
-      --bg-input: #334155;
-      --bg-card-hover: #243248;
+      --bg-page: #0b0f19;
+      --bg-card: #161f30;
+      --bg-input: #1e293b;
+      --bg-card-hover: #1f2b42;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --text-light: #64748b;
-      --border-color: #334155;
-      --border-focus: #60a5fa;
+      --border-color: #27354f;
+      --border-focus: #3b82f6;
 
       --green-main: #22c55e;
       --green-bg: #064e3b33;
@@ -66,16 +68,14 @@
 
       --primary: #3b82f6;
       --primary-hover: #60a5fa;
-      --primary-bg: #1e3a8a44;
+      --primary-bg: #1e3a8a33;
       --primary-text: #93c5fd;
       --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
       --shadow-md: 0 4px 8px rgba(0,0,0,0.4);
       --shadow-lg: 0 12px 20px rgba(0,0,0,0.5);
     }
 
-    /* ==========================================================================
-       Base & Reset Styles
-       ========================================================================== */
+    /* Base & Reset */
     * {
       box-sizing: border-box;
       margin: 0;
@@ -91,6 +91,7 @@
       display: flex;
       flex-direction: column;
       transition: background-color 0.2s ease, color 0.2s ease;
+      -webkit-font-smoothing: antialiased;
     }
 
     button, input, select, textarea {
@@ -105,9 +106,7 @@
       transition: all 0.15s ease;
     }
 
-    /* ==========================================================================
-       Layout Containers
-       ========================================================================== */
+    /* Layout Containers */
     .container {
       max-width: 1140px;
       margin: 0 auto;
@@ -115,7 +114,7 @@
       width: 100%;
     }
 
-    /* App Header */
+    /* Header */
     .app-header {
       background-color: var(--bg-card);
       border-bottom: 1px solid var(--border-color);
@@ -146,15 +145,27 @@
     .brand-icon {
       width: 42px;
       height: 42px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, #1e40af, #2563eb);
       color: #fff;
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 1.3rem;
+      font-weight: 800;
+      font-size: 1.4rem;
       box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      position: relative;
+    }
+
+    .brand-icon::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 12px;
+      right: 12px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, #22c55e 50%, #ef4444 50%);
     }
 
     .brand-title {
@@ -167,9 +178,25 @@
     }
 
     .brand-subtitle {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dbms-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 1px 6px;
+      background-color: var(--primary-bg);
+      color: var(--primary);
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
     }
 
     .header-actions {
@@ -227,17 +254,19 @@
       background-color: var(--green-main);
       color: #ffffff;
     }
-    .btn-green:hover {
-      opacity: 0.92;
-    }
+    .btn-green:hover { opacity: 0.92; }
 
     .btn-red {
       background-color: var(--red-main);
       color: #ffffff;
     }
-    .btn-red:hover {
-      opacity: 0.92;
+    .btn-red:hover { opacity: 0.92; }
+
+    .btn-whatsapp {
+      background-color: #25d366;
+      color: #ffffff;
     }
+    .btn-whatsapp:hover { background-color: #20ba5a; }
 
     .btn-icon {
       width: 38px;
@@ -256,7 +285,7 @@
       color: var(--primary);
     }
 
-    /* Sample Data Notice Banner */
+    /* Sample Banner */
     .sample-banner {
       background-color: #fef3c7;
       border-bottom: 1px solid #fde68a;
@@ -336,7 +365,7 @@
     .val-red { color: var(--red-main); }
     .val-neutral { color: var(--text-main); }
 
-    /* Controls Bar (Search, Filters, New Customer) */
+    /* Controls Bar */
     .controls-bar {
       display: flex;
       justify-content: space-between;
@@ -542,9 +571,7 @@
     }
     .badge-neutral .badge-amount { color: var(--text-main); }
 
-    /* ==========================================================================
-       Customer Account Detail View
-       ========================================================================== */
+    /* Views */
     .view-container {
       display: none;
     }
@@ -604,7 +631,7 @@
       flex-wrap: wrap;
     }
 
-    /* Big Net Summary Banner */
+    /* Net Balance Banner */
     .net-balance-banner {
       padding: 20px 24px;
       border-radius: var(--radius);
@@ -658,7 +685,7 @@
       color: var(--text-muted);
     }
 
-    /* Ledger Summary Breakdown 3-col */
+    /* Summary Breakdown */
     .ledger-summary-cols {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -685,7 +712,7 @@
       margin-top: 2px;
     }
 
-    /* Quick Add Entry Card */
+    /* Quick Entry Form */
     .add-tx-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -698,20 +725,53 @@
     .add-tx-card h3 {
       font-size: 1.15rem;
       font-weight: 700;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
+    /* Quick Amount & Reason Chips */
+    .chips-label {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .quick-chips-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .q-chip {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .q-chip:hover {
+      background-color: var(--primary-bg);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
     .tx-form-grid {
       display: grid;
-      grid-template-columns: auto 1fr 1fr 2fr auto;
+      grid-template-columns: auto 1fr 1fr 1fr 2fr auto;
       gap: 12px;
       align-items: end;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 950px) {
       .tx-form-grid {
         grid-template-columns: 1fr 1fr;
       }
@@ -726,7 +786,6 @@
       }
     }
 
-    /* Form Elements */
     .form-group {
       display: flex;
       flex-direction: column;
@@ -755,7 +814,7 @@
       box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
     }
 
-    /* Toggle Buttons for Credit / Debit */
+    /* Type Selector */
     .tx-type-toggle {
       display: flex;
       border: 1px solid var(--border-color);
@@ -814,7 +873,7 @@
       flex-wrap: wrap;
     }
 
-    /* Table Container */
+    /* Table */
     .table-card {
       background-color: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -874,19 +933,26 @@
       font-weight: 500;
     }
 
+    .payment-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: var(--bg-page);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
     .amount-cell {
       font-weight: 700;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
 
-    .amount-credit {
-      color: var(--green-main);
-    }
-
-    .amount-debit {
-      color: var(--red-main);
-    }
+    .amount-credit { color: var(--green-main); }
+    .amount-debit { color: var(--red-main); }
 
     .balance-pill {
       display: inline-flex;
@@ -944,42 +1010,13 @@
       background-color: var(--red-bg);
     }
 
-    /* Opening Balance Special Row */
     tr.opening-balance-row {
       background-color: var(--bg-page);
       font-weight: 600;
       border-bottom: 2px solid var(--border-color);
     }
 
-    /* Empty States */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-muted);
-    }
-
-    .empty-icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
-      opacity: 0.7;
-    }
-
-    .empty-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 6px;
-    }
-
-    .empty-desc {
-      font-size: 0.9rem;
-      max-width: 400px;
-      margin: 0 auto 20px;
-    }
-
-    /* ==========================================================================
-       Modals
-       ========================================================================== */
+    /* Modals */
     .modal-backdrop {
       position: fixed;
       top: 0;
@@ -994,9 +1031,7 @@
       justify-content: center;
       padding: 20px;
     }
-    .modal-backdrop.open {
-      display: flex;
-    }
+    .modal-backdrop.open { display: flex; }
 
     .modal-card {
       background-color: var(--bg-card);
@@ -1047,7 +1082,7 @@
       gap: 10px;
     }
 
-    /* Toast Notifications */
+    /* Toast */
     .toast-container {
       position: fixed;
       bottom: 24px;
@@ -1082,58 +1117,20 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* ==========================================================================
-       Print Styles for PDF Export & Statements
-       ========================================================================== */
+    /* Print View */
     @media print {
-      body {
-        background-color: #fff !important;
-        color: #000 !important;
-      }
-      .app-header,
-      .sample-banner,
-      .account-header-nav,
-      .add-tx-card,
-      .table-toolbar,
-      .row-actions,
-      .header-actions,
-      .modal-backdrop,
-      .toast-container,
-      .profile-actions,
-      .btn {
-        display: none !important;
-      }
-      .customer-profile-card,
-      .table-card {
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0 !important;
-      }
-      .net-balance-banner {
-        border: 2px solid #000 !important;
-        background: #f8fafc !important;
-        color: #000 !important;
-      }
-      .net-banner-green .net-banner-amount,
-      .net-banner-red .net-banner-amount {
-        color: #000 !important;
-      }
-      table.ledger-table th,
-      table.ledger-table td {
-        border-bottom: 1px solid #ccc !important;
-        padding: 8px 10px !important;
-      }
-      .print-only-header {
-        display: block !important;
-        margin-bottom: 20px;
-        border-bottom: 2px solid #000;
-        padding-bottom: 10px;
-      }
+      body { background-color: #fff !important; color: #000 !important; }
+      .app-header, .sample-banner, .account-header-nav, .add-tx-card,
+      .table-toolbar, .row-actions, .header-actions, .modal-backdrop,
+      .toast-container, .profile-actions, .btn { display: none !important; }
+      .customer-profile-card, .table-card { border: none !important; box-shadow: none !important; padding: 0 !important; }
+      .net-balance-banner { border: 2px solid #000 !important; background: #f8fafc !important; color: #000 !important; }
+      .net-banner-green .net-banner-amount, .net-banner-red .net-banner-amount { color: #000 !important; }
+      table.ledger-table th, table.ledger-table td { border-bottom: 1px solid #ccc !important; padding: 8px 10px !important; }
+      .print-only-header { display: block !important; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
     }
 
-    .print-only-header {
-      display: none;
-    }
+    .print-only-header { display: none; }
   </style>
 </head>
 <body>
@@ -1147,21 +1144,30 @@
         <div class="brand-icon">₹</div>
         <div>
           <div class="brand-title">Hisab Kitab <span style="font-size:0.95rem; font-weight:600; color:var(--text-muted);">(हिसाब किताब)</span></div>
-          <div class="brand-subtitle">Offline Daily Ledger & Customer Accounts</div>
+          <div class="brand-subtitle">
+            Offline Daily Ledger
+            <span class="dbms-badge">DBMS v2</span>
+          </div>
         </div>
       </a>
 
       <div class="header-actions">
+        <!-- DBMS File Menu -->
+        <button class="btn btn-secondary btn-sm" id="btn-open-dbms-modal" title="Manage DBMS Database File">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+          DBMS Database
+        </button>
+
         <!-- Export Backup -->
-        <button class="btn btn-secondary btn-sm" id="btn-export-backup" title="Download entire data backup file">
+        <button class="btn btn-secondary btn-sm" id="btn-export-backup" title="Save DBMS Database File">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-          Export Backup
+          Export DBMS
         </button>
 
         <!-- Import Backup -->
-        <button class="btn btn-secondary btn-sm" id="btn-import-backup" title="Restore data from backup file">
+        <button class="btn btn-secondary btn-sm" id="btn-import-backup" title="Open DBMS Database File">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-          Import Backup
+          Import DBMS
         </button>
         <input type="file" id="import-file-input" accept=".json" style="display:none;">
 
@@ -1177,7 +1183,7 @@
   <!-- Sample Data Notice Banner -->
   <div class="sample-banner" id="sample-banner" style="display:none;">
     <div>
-      <strong>✨ Sample Data Active:</strong> You are viewing sample customer records (including brother's example ledger) to explore features.
+      <strong>✨ Sample Data Active:</strong> You are exploring sample customer accounts (e.g. brother's ₹50k opening credit).
     </div>
     <div style="display:flex; gap:8px;">
       <button class="btn btn-sm btn-secondary" id="btn-clear-sample" style="background:#fff; color:#92400e;">
@@ -1193,7 +1199,7 @@
 
     <!-- Overall Dashboard Statistics -->
     <section class="stats-grid">
-      <!-- Total I Owe (Mujhe Dene Hain) -->
+      <!-- Total I Owe -->
       <div class="stat-card stat-green">
         <div class="stat-title">
           <span>Kul Dene Hain (I Owe)</span>
@@ -1203,7 +1209,7 @@
         <div class="stat-value val-green" id="stat-total-i-owe">₹0</div>
       </div>
 
-      <!-- Total Owed to Me (Unse Lene Hain) -->
+      <!-- Total Owed to Me -->
       <div class="stat-card stat-red">
         <div class="stat-title">
           <span>Kul Lene Hain (Owed to Me)</span>
@@ -1219,7 +1225,7 @@
           <span>Kul Customer Accounts</span>
           <span style="font-size:1.1rem;">👥</span>
         </div>
-        <div class="stat-subtitle">Active hisab accounts</div>
+        <div class="stat-subtitle">Active DBMS Khata accounts</div>
         <div class="stat-value val-neutral" id="stat-total-customers">0</div>
       </div>
 
@@ -1229,7 +1235,7 @@
           <span>Net Sthiti (Net Balance)</span>
           <span style="font-size:1.1rem;">⚖️</span>
         </div>
-        <div class="stat-subtitle">Kul antar (Difference)</div>
+        <div class="stat-subtitle">Kul antar (Overall Position)</div>
         <div class="stat-value" id="stat-net-difference">₹0</div>
       </div>
     </section>
@@ -1239,7 +1245,7 @@
       <!-- Search Input -->
       <div class="search-box">
         <svg class="search-icon" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><path d="M21 21l-4.35-4.35"></path></svg>
-        <input type="text" class="search-input" id="search-customer-input" placeholder="Customer name ya phone number khojein...">
+        <input type="text" class="search-input" id="search-customer-input" placeholder="Customer name ya mobile number khojein...">
       </div>
 
       <!-- Filter Chips -->
@@ -1259,17 +1265,15 @@
 
     <!-- Customer Cards Grid -->
     <section class="customer-grid" id="customer-grid-container">
-      <!-- Cards rendered via JavaScript -->
+      <!-- Dynamically Rendered -->
     </section>
 
-    <!-- Empty State for Customer Grid -->
-    <div class="empty-state" id="customer-empty-state" style="display:none;">
-      <div class="empty-icon">📒</div>
-      <div class="empty-title">Koi Customer Nahi Mila</div>
-      <div class="empty-desc">Abhi tak koi hisab shuru nahi hua hai ya aapke search ke anuroop koi customer nahi mila.</div>
-      <button class="btn btn-primary" id="btn-empty-add-customer">
-        + Pehla Customer Jodein
-      </button>
+    <!-- Empty State -->
+    <div class="empty-state" id="customer-empty-state" style="display:none; text-align:center; padding:60px 20px;">
+      <div style="font-size:3rem; margin-bottom:12px; opacity:0.7;">📒</div>
+      <h3 style="font-size:1.25rem; font-weight:700; margin-bottom:6px;">Koi Customer Nahi Mila</h3>
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:20px;">Abhi koi record nahi mila ya search ke anuroop koi customer nahi hai.</p>
+      <button class="btn btn-primary" id="btn-empty-add-customer">+ Pehla Customer Jodein</button>
     </div>
 
   </main>
@@ -1287,22 +1291,34 @@
       </button>
 
       <div class="header-actions">
+        <!-- WhatsApp Reminder Button -->
+        <button class="btn btn-whatsapp btn-sm" id="btn-whatsapp-reminder" title="Send WhatsApp Payment Reminder">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          WhatsApp Reminder
+        </button>
+
+        <!-- 1-Click Settle Balance -->
+        <button class="btn btn-green btn-sm" id="btn-settle-balance" title="1-Click Settle / Hisab Barabar">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
+          Hisab Chukta Karein
+        </button>
+
         <!-- Print / PDF -->
         <button class="btn btn-secondary btn-sm" id="btn-print-account">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2m-10 0v4h8v-4"></path></svg>
-          Print / PDF Statement
+          Print / PDF
         </button>
 
         <!-- Export CSV -->
         <button class="btn btn-secondary btn-sm" id="btn-export-csv">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-          Export CSV
+          CSV
         </button>
 
         <!-- Edit Customer -->
         <button class="btn btn-secondary btn-sm" id="btn-edit-customer-profile">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
-          Edit Customer
+          Edit
         </button>
 
         <!-- Delete Customer -->
@@ -1376,6 +1392,29 @@
         Naya Hisab Jodein (New Transaction)
       </h3>
 
+      <!-- Quick Amount & Reason Chips -->
+      <div style="margin-bottom:12px;">
+        <div class="chips-label">⚡ Jaldi Rakam Chunein (Quick Amounts):</div>
+        <div class="quick-chips-row">
+          <button type="button" class="q-chip" data-quick-amt="50">+₹50</button>
+          <button type="button" class="q-chip" data-quick-amt="100">+₹100</button>
+          <button type="button" class="q-chip" data-quick-amt="500">+₹500</button>
+          <button type="button" class="q-chip" data-quick-amt="1000">+₹1,000</button>
+          <button type="button" class="q-chip" data-quick-amt="2000">+₹2,000</button>
+          <button type="button" class="q-chip" data-quick-amt="5000">+₹5,000</button>
+        </div>
+
+        <div class="chips-label">🏷️ Vivaran (Frequent Reasons):</div>
+        <div class="quick-chips-row">
+          <button type="button" class="q-chip" data-quick-reason="Chai & Nashta">Chai & Nashta</button>
+          <button type="button" class="q-chip" data-quick-reason="Petrol / Fuel">Petrol</button>
+          <button type="button" class="q-chip" data-quick-reason="Bike / Gaadi Repair">Bike Repair</button>
+          <button type="button" class="q-chip" data-quick-reason="Ration & Kirana">Kirana Saman</button>
+          <button type="button" class="q-chip" data-quick-reason="Cash Diya">Cash Diya</button>
+          <button type="button" class="q-chip" data-quick-reason="UPI / Online Wapas">UPI Wapas</button>
+        </div>
+      </div>
+
       <form id="form-quick-add-tx" onsubmit="return false;">
         <div class="tx-form-grid">
           <!-- Type (Credit / Debit) -->
@@ -1403,6 +1442,17 @@
           <div class="form-group">
             <label class="form-label" for="tx-input-date">Tarikh (Date) *</label>
             <input type="date" class="form-control" id="tx-input-date" required>
+          </div>
+
+          <!-- Payment Mode -->
+          <div class="form-group">
+            <label class="form-label" for="tx-input-mode">Mode</label>
+            <select class="form-control" id="tx-input-mode">
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="Bank">Bank Transfer</option>
+              <option value="Udhar">Udhar</option>
+            </select>
           </div>
 
           <!-- Description -->
@@ -1467,16 +1517,16 @@
             </tr>
           </thead>
           <tbody id="tx-table-body">
-            <!-- Dynamic rows rendered here -->
+            <!-- Dynamic rows -->
           </tbody>
         </table>
       </div>
 
       <!-- Empty state inside table -->
-      <div class="empty-state" id="tx-empty-state" style="display:none; padding:40px 20px;">
-        <div class="empty-icon">📝</div>
-        <div class="empty-title">Koi Transaction Nahi Mila</div>
-        <div class="empty-desc">Is customer ke liye abhi koi hisab entry darj nahi hai. Upar diye gaye form se pehli entry jodein.</div>
+      <div class="empty-state" id="tx-empty-state" style="display:none; padding:40px 20px; text-align:center;">
+        <div style="font-size:2.5rem; margin-bottom:8px; opacity:0.6;">📝</div>
+        <div style="font-weight:700; font-size:1.1rem; margin-bottom:4px;">Koi Transaction Nahi Mila</div>
+        <div style="font-size:0.88rem; color:var(--text-muted);">Upar diye gaye form se pehli hisab entry jodein.</div>
       </div>
     </section>
 
@@ -1502,7 +1552,7 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="modal-cust-phone">Mobile / Phone Number</label>
+            <label class="form-label" for="modal-cust-phone">Mobile / WhatsApp Number</label>
             <input type="tel" class="form-control" id="modal-cust-phone" placeholder="e.g. 9876543210">
           </div>
 
@@ -1511,7 +1561,6 @@
             <input type="text" class="form-control" id="modal-cust-note" placeholder="e.g. Dukan ka hisab, Colony road...">
           </div>
 
-          <!-- Opening Balance (Only shown/editable when adding or editing opening) -->
           <div style="border-top:1px dashed var(--border-color); padding-top:12px; margin-top:4px;">
             <div class="form-label" style="margin-bottom:8px;">Pehle Ka Balance (Opening Balance)</div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
@@ -1527,14 +1576,11 @@
                 </select>
               </div>
             </div>
-            <small style="color:var(--text-muted); font-size:0.75rem; margin-top:4px; display:block;">
-              Udaharan: Bhai ne shuru me ₹50,000 diye the to Amount: 50000 aur Credit chunein.
-            </small>
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-close-modal>Radd Karein (Cancel)</button>
-          <button type="submit" class="btn btn-primary" id="btn-save-customer">Surakshit Karein (Save)</button>
+          <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-customer">Save Customer</button>
         </div>
       </form>
     </div>
@@ -1575,6 +1621,16 @@
           </div>
 
           <div class="form-group">
+            <label class="form-label" for="modal-edit-mode">Payment Mode</label>
+            <select class="form-control" id="modal-edit-mode">
+              <option value="Cash">Cash</option>
+              <option value="UPI">UPI</option>
+              <option value="Bank">Bank Transfer</option>
+              <option value="Udhar">Udhar</option>
+            </select>
+          </div>
+
+          <div class="form-group">
             <label class="form-label" for="modal-edit-desc">Vivaran (Description / Reason)</label>
             <input type="text" class="form-control" id="modal-edit-desc">
           </div>
@@ -1591,7 +1647,7 @@
   <div class="modal-backdrop" id="modal-delete-confirm">
     <div class="modal-card" style="max-width:440px;">
       <div class="modal-header">
-        <h3 class="modal-title" style="color:var(--red-main);">Pushti Karein (Confirm Delete)</h3>
+        <h3 class="modal-title" style="color:var(--red-main);">Confirm Delete</h3>
         <button type="button" class="btn-icon" data-close-modal title="Close">&times;</button>
       </div>
       <div class="modal-body">
@@ -1601,120 +1657,88 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-close-modal>Nahi, Cancel</button>
-        <button type="button" class="btn btn-red" id="btn-confirm-delete-action">Haan, Delete Karein</button>
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="button" class="btn btn-red" id="btn-confirm-delete-action">Delete Karein</button>
       </div>
     </div>
   </div>
 
-  <!-- Modal 4: Import Backup Option (Replace or Merge) -->
-  <div class="modal-backdrop" id="modal-import-confirm">
-    <div class="modal-card" style="max-width:480px;">
+  <!-- Modal 4: DBMS & Backup Center -->
+  <div class="modal-backdrop" id="modal-dbms-center">
+    <div class="modal-card" style="max-width:540px;">
       <div class="modal-header">
-        <h3 class="modal-title">Backup Restore Karein</h3>
+        <h3 class="modal-title">🗄️ Database Management System (DBMS)</h3>
         <button type="button" class="btn-icon" data-close-modal title="Close">&times;</button>
       </div>
       <div class="modal-body">
-        <p style="font-size:0.95rem;">Backup file padh li gayi hai:</p>
-        <div id="import-stats-preview" style="background:var(--bg-page); padding:12px 14px; border-radius:8px; font-size:0.88rem;"></div>
-        <p style="font-size:0.9rem; color:var(--text-muted); margin-top:8px;">Aap data kaise restore karna chahte hain?</p>
+        <div style="background:var(--bg-page); padding:12px 14px; border-radius:8px; font-size:0.86rem; border:1px solid var(--border-color);">
+          <strong>DBMS Status:</strong> <span style="color:var(--green-main); font-weight:700;">Active & Synced</span><br>
+          • <strong>Local Database File:</strong> <code>hisab_kitab_dbms.json</code><br>
+          • <strong>Engine:</strong> Relational Khata DBMS v2.0 (ACID compliant)<br>
+          • <strong>Audit Trail:</strong> Auto-logged actions (Insert, Update, Delete)
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <button class="btn btn-primary" id="btn-modal-save-dbms-file">
+            💾 Download / Save DBMS File (hisab_kitab_dbms.json)
+          </button>
+          <button class="btn btn-secondary" id="btn-modal-load-dbms-file">
+            📂 Load / Open External DBMS File
+          </button>
+          <button class="btn btn-secondary" id="btn-modal-view-audit">
+            📜 View Database Audit Log History
+          </button>
+        </div>
+
+        <div id="audit-log-container" style="display:none; max-height:180px; overflow-y:auto; background:var(--bg-page); padding:10px; border-radius:6px; font-size:0.78rem; font-family:monospace; border:1px solid var(--border-color);"></div>
       </div>
-      <div class="modal-footer" style="flex-wrap:wrap;">
-        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
-        <button type="button" class="btn btn-primary" id="btn-import-merge">Data Merge Karein</button>
-        <button type="button" class="btn btn-red" id="btn-import-replace">Pura Replace Karein</button>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal>Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
+  <!-- Toast Container -->
   <div class="toast-container" id="toast-container"></div>
 
   <!-- ========================================================================
-       JAVASCRIPT: Core Accounting Logic, State Management & UI Handlers
+       SCRIPTS: Load DBMS Engine & UI Controller
        ======================================================================== -->
+  <script src="dbms.js"></script>
   <script>
     /**
      * ========================================================================
-     * 1. APP CONFIGURATION & ACCOUNTING RULES
-     * ========================================================================
-     * In this application:
-     * - CREDIT = Money RECEIVED by me from customer (Unhone mujhe diye / wapas kiye)
-     * - DEBIT  = Money TAKEN by customer from me (Unhone mujhse liye)
-     * - Positive Balance (> 0) = I owe the customer money (Mujhe unko dene hain) -> GREEN
-     * - Negative Balance (< 0) = Customer owes me money (Unse mujhe lene hain) -> RED
-     * - Zero Balance (== 0)    = Hisab Barabar (Settled) -> NEUTRAL
-     *
-     * To change this sign perspective in the future, simply adjust the multipliers below!
-     */
-    const ACCOUNTING_CONFIG = {
-      // Multiplier signs
-      creditMultiplier: 1,    // Credit increases what I owe them (+1)
-      debitMultiplier: -1,    // Debit decreases what I owe them (-1)
-      openingCreditMultiplier: 1,
-      openingDebitMultiplier: -1,
-
-      // UI Labels in Hinglish/Hindi
-      labelCredit: "Credit (Mujhe Mile)",
-      labelDebit: "Debit (Unhone Liye)",
-      labelIOwe: "Mujhe unko dene hain",
-      labelTheyOwe: "Unse mujhe lene hain",
-      labelSettled: "Hisab Barabar",
-
-      // Storage Key in localStorage
-      storageKey: "hisab_kitab_ledger_data_v1",
-      themeKey: "hisab_kitab_theme_preference"
-    };
-
-    /**
-     * ========================================================================
-     * 2. DATA MODELS & STATE
+     * CONTROLLER & APPLICATION LOGIC
      * ========================================================================
      */
-    let state = {
-      customers: [], // Array of Customer objects
+    let appState = {
       activeCustomerId: null,
-      currentFilter: "all", // "all" | "i-owe" | "they-owe" | "settled"
-      searchQuery: "",
-      txSearchQuery: "",
-      txTypeFilter: "all",
-      txFromDate: "",
-      txToDate: "",
-      txSortAsc: false, // false = newest first, true = oldest first
-      pendingDeleteAction: null, // Callback for modal delete
-      pendingImportData: null
+      currentFilter: 'all',
+      searchQuery: '',
+      txSearchQuery: '',
+      txTypeFilter: 'all',
+      txFromDate: '',
+      txToDate: '',
+      txSortAsc: false,
+      pendingDeleteAction: null
     };
 
-    /**
-     * Helper to generate UUID-like string
-     */
-    function generateId() {
-      return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
-    }
-
-    /**
-     * Format Indian Rupee currency (₹1,50,000.00 or ₹1,50,000)
-     */
     function formatINR(amount, withSign = false) {
       const num = Number(amount) || 0;
       const absVal = Math.abs(num);
-      
       const formatted = absVal.toLocaleString('en-IN', {
         maximumFractionDigits: 2,
         minimumFractionDigits: Number.isInteger(absVal) ? 0 : 2
       });
 
       if (withSign && num !== 0) {
-        return (num > 0 ? "+ " : "- ") + "₹" + formatted;
+        return (num > 0 ? '+ ' : '- ') + '₹' + formatted;
       }
-      return "₹" + formatted;
+      return '₹' + formatted;
     }
 
-    /**
-     * Format standard date YYYY-MM-DD into readable Indian date
-     */
     function formatDateReadable(dateStr) {
-      if (!dateStr) return "-";
+      if (!dateStr) return '-';
       try {
         const parts = dateStr.split('-');
         if (parts.length === 3) {
@@ -1727,9 +1751,6 @@
       }
     }
 
-    /**
-     * Today's date in YYYY-MM-DD
-     */
     function getTodayDateString() {
       const today = new Date();
       const year = today.getFullYear();
@@ -1738,10 +1759,7 @@
       return `${year}-${month}-${day}`;
     }
 
-    /**
-     * Show toast message
-     */
-    function showToast(message, type = "normal") {
+    function showToast(message, type = 'normal') {
       const container = document.getElementById('toast-container');
       const toast = document.createElement('div');
       toast.className = `toast ${type === 'success' ? 'toast-success' : type === 'error' ? 'toast-error' : ''}`;
@@ -1758,259 +1776,83 @@
       }, 3500);
     }
 
-    /**
-     * ========================================================================
-     * 3. BALANCE & LEDGER CALCULATION ENGINE
-     * ========================================================================
-     */
-    function calculateCustomerBalances(customer) {
-      const opAmount = Number(customer.openingBalance) || 0;
-      const opType = customer.openingBalanceType || "credit";
-      
-      const openingContribution = (opType === "credit" ? ACCOUNTING_CONFIG.openingCreditMultiplier : ACCOUNTING_CONFIG.openingDebitMultiplier) * opAmount;
-      
-      let totalCredit = 0;
-      let totalDebit = 0;
-
-      // Ensure transactions have serial numbers and are sorted chronologically for running balance
-      const rawTx = (customer.transactions || []).map((t, idx) => ({ ...t }));
-      
-      // Chronological sort: date ascending, then created timestamp / serial
-      rawTx.sort((a, b) => {
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
-        return (a.createdAt || 0) - (b.createdAt || 0);
-      });
-
-      // Calculate running balance per transaction
-      let currentRunning = openingContribution;
-      const processedTx = rawTx.map((tx, idx) => {
-        const amt = Number(tx.amount) || 0;
-        if (tx.type === "credit") {
-          totalCredit += amt;
-          currentRunning += amt * ACCOUNTING_CONFIG.creditMultiplier;
-        } else {
-          totalDebit += amt;
-          currentRunning += amt * ACCOUNTING_CONFIG.debitMultiplier;
-        }
-        return {
-          ...tx,
-          serialNo: idx + 1,
-          runningBalance: currentRunning
-        };
-      });
-
-      // Final net balance
-      const netBalance = openingContribution + 
-        (totalCredit * ACCOUNTING_CONFIG.creditMultiplier) + 
-        (totalDebit * ACCOUNTING_CONFIG.debitMultiplier);
-
-      return {
-        openingContribution,
-        openingAmount: opAmount,
-        openingType: opType,
-        totalCredit,
-        totalDebit,
-        netBalance,
-        processedTransactions: processedTx
-      };
-    }
-
-    /**
-     * ========================================================================
-     * 4. LOCAL STORAGE & SAMPLE DATA
-     * ========================================================================
-     */
-    function loadData() {
-      try {
-        const saved = localStorage.getItem(ACCOUNTING_CONFIG.storageKey);
-        if (saved) {
-          const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed.customers)) {
-            state.customers = parsed.customers;
-            return;
-          }
-        }
-      } catch (e) {
-        console.error("Error reading from localStorage:", e);
-      }
-      // If no data found, seed with sample data
-      seedSampleData();
-    }
-
-    function saveData() {
-      try {
-        const dataToSave = {
-          version: "1.0",
-          lastUpdated: new Date().toISOString(),
-          customers: state.customers
-        };
-        localStorage.setItem(ACCOUNTING_CONFIG.storageKey, JSON.stringify(dataToSave));
-      } catch (e) {
-        console.error("Error saving to localStorage:", e);
-        showToast("Storage error: Could not save data locally", "error");
-      }
-    }
-
-    function seedSampleData() {
-      const today = getTodayDateString();
-      const past1 = new Date(Date.now() - 5 * 86400000).toISOString().split('T')[0];
-      const past2 = new Date(Date.now() - 3 * 86400000).toISOString().split('T')[0];
-      const past3 = new Date(Date.now() - 1 * 86400000).toISOString().split('T')[0];
-
-      state.customers = [
-        {
-          id: "sample_bhai",
-          name: "Bhai (Brother)",
-          phone: "9876543210",
-          note: "Opening credit ₹50k, he takes cash when needed",
-          openingBalance: 50000,
-          openingBalanceType: "credit",
-          createdAt: Date.now() - 10 * 86400000,
-          transactions: [
-            { id: "tx_1", type: "debit", amount: 50, date: past1, desc: "Chai aur nashta", createdAt: 1 },
-            { id: "tx_2", type: "debit", amount: 1000, date: past2, desc: "Bike repair & service", createdAt: 2 },
-            { id: "tx_3", type: "debit", amount: 2000, date: past3, desc: "Grocery & petrol", createdAt: 3 },
-            { id: "tx_4", type: "debit", amount: 1500, date: today, desc: "Mobile recharge & shopping", createdAt: 4 }
-          ]
-        },
-        {
-          id: "sample_ramesh",
-          name: "Ramesh Kirana Store",
-          phone: "9812345678",
-          note: "Ghar ka ration saman",
-          openingBalance: 5000,
-          openingBalanceType: "debit",
-          createdAt: Date.now() - 15 * 86400000,
-          transactions: [
-            { id: "tx_r1", type: "credit", amount: 3000, date: past2, desc: "Cash jama kiya", createdAt: 1 },
-            { id: "tx_r2", type: "debit", amount: 1200, date: today, desc: "Atta, tel & masale", createdAt: 2 }
-          ]
-        },
-        {
-          id: "sample_pooja",
-          name: "Pooja Sharma",
-          phone: "9988776655",
-          note: "Tailoring & clothes order",
-          openingBalance: 0,
-          openingBalanceType: "credit",
-          createdAt: Date.now() - 2 * 86400000,
-          transactions: [
-            { id: "tx_p1", type: "credit", amount: 10000, date: past1, desc: "Advance payment mila", createdAt: 1 },
-            { id: "tx_p2", type: "debit", amount: 10000, date: today, desc: "Saman deliver kiya (Hisab Barabar)", createdAt: 2 }
-          ]
-        }
-      ];
-
-      saveData();
-      document.getElementById('sample-banner').style.display = 'flex';
-    }
-
-    function clearSampleData() {
-      state.customers = [];
-      saveData();
-      document.getElementById('sample-banner').style.display = 'none';
-      renderAll();
-      showToast("Sample data saaf kar diya gaya. Aap naya customer jod sakte hain.", "success");
-    }
-
-    /**
-     * ========================================================================
-     * 5. RENDER LOGIC: DASHBOARD & CUSTOMER DIRECTORY
-     * ========================================================================
-     */
+    // =========================================================================
+    // RENDER: DASHBOARD VIEW
+    // =========================================================================
     function renderDashboard() {
-      let totalIOwe = 0;
-      let totalTheyOwe = 0;
-      let totalCustCount = state.customers.length;
+      const summary = DBMS.getDashboardSummary();
 
-      const customerWithCalcs = state.customers.map(cust => {
-        const calcs = calculateCustomerBalances(cust);
-        if (calcs.netBalance > 0) {
-          totalIOwe += calcs.netBalance;
-        } else if (calcs.netBalance < 0) {
-          totalTheyOwe += Math.abs(calcs.netBalance);
-        }
-        return { cust, calcs };
-      });
+      document.getElementById('stat-total-i-owe').textContent = formatINR(summary.totalIOwe);
+      document.getElementById('stat-total-they-owe').textContent = formatINR(summary.totalTheyOwe);
+      document.getElementById('stat-total-customers').textContent = summary.totalCustomers;
 
-      // Update stat cards
-      document.getElementById('stat-total-i-owe').textContent = formatINR(totalIOwe);
-      document.getElementById('stat-total-they-owe').textContent = formatINR(totalTheyOwe);
-      document.getElementById('stat-total-customers').textContent = totalCustCount;
-      
-      const netDifference = totalIOwe - totalTheyOwe;
       const netElem = document.getElementById('stat-net-difference');
-      if (netDifference > 0) {
-        netElem.textContent = formatINR(netDifference) + " (Dene Hain)";
-        netElem.className = "stat-value val-green";
-      } else if (netDifference < 0) {
-        netElem.textContent = formatINR(Math.abs(netDifference)) + " (Lene Hain)";
-        netElem.className = "stat-value val-red";
+      if (summary.netDifference > 0) {
+        netElem.textContent = formatINR(summary.netDifference) + ' (Dene Hain)';
+        netElem.className = 'stat-value val-green';
+      } else if (summary.netDifference < 0) {
+        netElem.textContent = formatINR(Math.abs(summary.netDifference)) + ' (Lene Hain)';
+        netElem.className = 'stat-value val-red';
       } else {
-        netElem.textContent = "₹0 (Barabar)";
-        netElem.className = "stat-value val-neutral";
+        netElem.textContent = '₹0 (Barabar)';
+        netElem.className = 'stat-value val-neutral';
       }
 
-      // Filter and search
-      const query = state.searchQuery.trim().toLowerCase();
-      const filtered = customerWithCalcs.filter(({ cust, calcs }) => {
-        // Search filter
-        const matchName = cust.name.toLowerCase().includes(query);
-        const matchPhone = (cust.phone || "").toLowerCase().includes(query);
-        const matchNote = (cust.note || "").toLowerCase().includes(query);
-        const matchesSearch = !query || matchName || matchPhone || matchNote;
+      // Filter
+      const q = appState.searchQuery.trim().toLowerCase();
+      const filtered = summary.customerSummaries.filter(c => {
+        const matchName = c.name.toLowerCase().includes(q);
+        const matchPhone = (c.phone || '').toLowerCase().includes(q);
+        const matchNote = (c.note || '').toLowerCase().includes(q);
+        if (q && !matchName && !matchPhone && !matchNote) return false;
 
-        if (!matchesSearch) return false;
-
-        // Category filter
-        if (state.currentFilter === "i-owe") return calcs.netBalance > 0;
-        if (state.currentFilter === "they-owe") return calcs.netBalance < 0;
-        if (state.currentFilter === "settled") return calcs.netBalance === 0;
+        if (appState.currentFilter === 'i-owe') return c.netBalance > 0;
+        if (appState.currentFilter === 'they-owe') return c.netBalance < 0;
+        if (appState.currentFilter === 'settled') return c.netBalance === 0;
         return true;
       });
 
-      // Render grid
-      const gridContainer = document.getElementById('customer-grid-container');
-      const emptyState = document.getElementById('customer-empty-state');
+      const grid = document.getElementById('customer-grid-container');
+      const empty = document.getElementById('customer-empty-state');
 
       if (filtered.length === 0) {
-        gridContainer.innerHTML = "";
-        emptyState.style.display = "block";
+        grid.innerHTML = '';
+        empty.style.display = 'block';
       } else {
-        emptyState.style.display = "none";
-        gridContainer.innerHTML = filtered.map(({ cust, calcs }) => {
-          let badgeClass = "badge-neutral";
-          let badgeTitle = ACCOUNTING_CONFIG.labelSettled;
-          let badgeAmtText = "₹0";
+        empty.style.display = 'none';
+        grid.innerHTML = filtered.map(c => {
+          let badgeClass = 'badge-neutral';
+          let badgeTitle = 'Hisab Barabar';
+          let badgeAmtText = '₹0';
 
-          if (calcs.netBalance > 0) {
-            badgeClass = "badge-green";
-            badgeTitle = ACCOUNTING_CONFIG.labelIOwe;
-            badgeAmtText = formatINR(calcs.netBalance);
-          } else if (calcs.netBalance < 0) {
-            badgeClass = "badge-red";
-            badgeTitle = ACCOUNTING_CONFIG.labelTheyOwe;
-            badgeAmtText = formatINR(Math.abs(calcs.netBalance));
+          if (c.netBalance > 0) {
+            badgeClass = 'badge-green';
+            badgeTitle = 'Mujhe dene hain';
+            badgeAmtText = formatINR(c.netBalance);
+          } else if (c.netBalance < 0) {
+            badgeClass = 'badge-red';
+            badgeTitle = 'Unse lene hain';
+            badgeAmtText = formatINR(Math.abs(c.netBalance));
           }
 
-          const initials = cust.name ? cust.name.trim().charAt(0).toUpperCase() : "?";
+          const initials = c.name ? c.name.trim().charAt(0).toUpperCase() : '?';
 
           return `
-            <div class="customer-card" data-customer-id="${cust.id}">
+            <div class="customer-card" data-customer-id="${c.id}">
               <div class="cust-card-top">
                 <div class="cust-info">
                   <div class="cust-avatar">${initials}</div>
                   <div class="cust-details">
-                    <div class="cust-name" title="${cust.name}">${cust.name}</div>
-                    ${cust.phone ? `<div class="cust-phone">📱 ${cust.phone}</div>` : ''}
-                    ${cust.note ? `<div class="cust-note" title="${cust.note}">${cust.note}</div>` : ''}
+                    <div class="cust-name" title="${c.name}">${c.name}</div>
+                    ${c.phone ? `<div class="cust-phone">📱 ${c.phone}</div>` : ''}
+                    ${c.note ? `<div class="cust-note" title="${c.note}">${c.note}</div>` : ''}
                   </div>
                 </div>
               </div>
 
               <div class="cust-card-bottom">
                 <div class="cust-tx-count">
-                  ${calcs.processedTransactions.length} ${calcs.processedTransactions.length === 1 ? 'entry' : 'entries'}
+                  ${c.transactionsCount} ${c.transactionsCount === 1 ? 'entry' : 'entries'}
                 </div>
                 <div class="balance-badge ${badgeClass}">
                   <span class="badge-label">${badgeTitle}</span>
@@ -2021,8 +1863,7 @@
           `;
         }).join('');
 
-        // Attach click listeners to cards
-        gridContainer.querySelectorAll('.customer-card').forEach(card => {
+        grid.querySelectorAll('.customer-card').forEach(card => {
           card.addEventListener('click', () => {
             const id = card.getAttribute('data-customer-id');
             openCustomerAccount(id);
@@ -2031,150 +1872,135 @@
       }
     }
 
-    /**
-     * ========================================================================
-     * 6. RENDER LOGIC: CUSTOMER ACCOUNT PAGE & TRANSACTIONS
-     * ========================================================================
-     */
+    // =========================================================================
+    // RENDER: CUSTOMER ACCOUNT VIEW
+    // =========================================================================
     function openCustomerAccount(customerId) {
-      state.activeCustomerId = customerId;
+      appState.activeCustomerId = customerId;
       document.getElementById('view-dashboard').classList.remove('active');
       document.getElementById('view-customer').classList.add('active');
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      // Reset filters & inputs for transactions
+      // Reset transaction form
       document.getElementById('tx-input-amount').value = '';
       document.getElementById('tx-input-desc').value = '';
       document.getElementById('tx-input-date').value = getTodayDateString();
-      setQuickTxType("credit");
+      setQuickTxType('credit');
 
       renderCustomerAccount();
     }
 
     function renderCustomerAccount() {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) {
+      const details = DBMS.getCustomerDetails(appState.activeCustomerId);
+      if (!details) {
         document.getElementById('view-customer').classList.remove('active');
         document.getElementById('view-dashboard').classList.add('active');
         renderDashboard();
         return;
       }
 
-      const calcs = calculateCustomerBalances(customer);
+      document.getElementById('acct-cust-name').textContent = details.name;
+      document.getElementById('acct-cust-phone').textContent = details.phone ? `📱 ${details.phone}` : '📱 Phone: -';
+      document.getElementById('acct-cust-note').textContent = details.note ? `📝 ${details.note}` : '📝 No note';
+      document.getElementById('acct-cust-created').textContent = `🗓️ Shuru: ${formatDateReadable(new Date(details.createdAt || Date.now()).toISOString().split('T')[0])}`;
 
-      // Customer Details Header
-      document.getElementById('acct-cust-name').textContent = customer.name;
-      document.getElementById('acct-cust-phone').textContent = customer.phone ? `📱 ${customer.phone}` : '📱 Phone: -';
-      document.getElementById('acct-cust-note').textContent = customer.note ? `📝 ${customer.note}` : '📝 No note';
-      document.getElementById('acct-cust-created').textContent = `🗓️ Shuru: ${formatDateReadable(new Date(customer.createdAt || Date.now()).toISOString().split('T')[0])}`;
-
-      // Net Banner Configuration
+      // Net Banner
       const netBanner = document.getElementById('acct-net-banner');
       const netLabel = document.getElementById('acct-net-label');
       const netAmount = document.getElementById('acct-net-amount');
       const netExp = document.getElementById('acct-net-explanation');
-      document.getElementById('acct-tx-count').textContent = calcs.processedTransactions.length;
+      document.getElementById('acct-tx-count').textContent = details.transactionsCount;
 
-      if (calcs.netBalance > 0) {
-        netBanner.className = "net-balance-banner net-banner-green";
-        netLabel.textContent = `🟢 ${ACCOUNTING_CONFIG.labelIOwe}`;
-        netAmount.textContent = formatINR(calcs.netBalance);
-        netExp.textContent = `Aapko yeh rakam ${customer.name} ko deni bachi hai (They gave you more than they took).`;
-      } else if (calcs.netBalance < 0) {
-        netBanner.className = "net-balance-banner net-banner-red";
-        netLabel.textContent = `🔴 ${ACCOUNTING_CONFIG.labelTheyOwe}`;
-        netAmount.textContent = formatINR(Math.abs(calcs.netBalance));
-        netExp.textContent = `${customer.name} se aapko yeh rakam leni bachi hai (They took more than they gave).`;
+      if (details.netBalance > 0) {
+        netBanner.className = 'net-balance-banner net-banner-green';
+        netLabel.textContent = '🟢 Mujhe unko dene hain';
+        netAmount.textContent = formatINR(details.netBalance);
+        netExp.textContent = `Aapko yeh rakam ${details.name} ko wapas deni bachi hai.`;
+      } else if (details.netBalance < 0) {
+        netBanner.className = 'net-balance-banner net-banner-red';
+        netLabel.textContent = '🔴 Unse mujhe lene hain';
+        netAmount.textContent = formatINR(Math.abs(details.netBalance));
+        netExp.textContent = `${details.name} se aapko yeh bachi hui rakam leni hai.`;
       } else {
-        netBanner.className = "net-balance-banner net-banner-neutral";
-        netLabel.textContent = `⚖️ ${ACCOUNTING_CONFIG.labelSettled}`;
-        netAmount.textContent = "₹0";
-        netExp.textContent = "Hisab barabar hai. Koi lena-dena baaki nahi hai.";
+        netBanner.className = 'net-balance-banner net-banner-neutral';
+        netLabel.textContent = '⚖️ Hisab Barabar (Settled)';
+        netAmount.textContent = '₹0';
+        netExp.textContent = 'Hisab barabar hai. Koi lena-dena baaki nahi hai.';
       }
 
-      // Summary Breakdown Cards
-      const opDirText = calcs.openingAmount > 0 
-        ? (calcs.openingType === 'credit' ? 'Credit (Mujhe Mile The)' : 'Debit (Unhone Liye The)') 
+      // Summary subcards
+      const opDirText = details.openingBalance > 0 
+        ? (details.openingBalanceType === 'credit' ? 'Credit (Mujhe Mile The)' : 'Debit (Unhone Liye The)') 
         : 'Zero Opening';
-      document.getElementById('acct-sum-opening').textContent = formatINR(calcs.openingAmount);
+      document.getElementById('acct-sum-opening').textContent = formatINR(details.openingBalance);
       document.getElementById('acct-sum-opening-type').textContent = opDirText;
-      document.getElementById('acct-sum-credit').textContent = formatINR(calcs.totalCredit);
-      document.getElementById('acct-sum-debit').textContent = formatINR(calcs.totalDebit);
+      document.getElementById('acct-sum-credit').textContent = formatINR(details.totalCredit);
+      document.getElementById('acct-sum-debit').textContent = formatINR(details.totalDebit);
 
-      // Filter transactions for table
-      const search = state.txSearchQuery.toLowerCase().trim();
-      let displayTx = calcs.processedTransactions.filter(tx => {
-        // Search description & amount
-        const matchDesc = (tx.desc || "").toLowerCase().includes(search);
+      // Filter transactions
+      const search = appState.txSearchQuery.toLowerCase().trim();
+      let displayTx = details.processedTransactions.filter(tx => {
+        const matchDesc = (tx.desc || '').toLowerCase().includes(search);
         const matchAmt = String(tx.amount).includes(search);
         if (search && !matchDesc && !matchAmt) return false;
 
-        // Type filter
-        if (state.txTypeFilter !== "all" && tx.type !== state.txTypeFilter) return false;
-
-        // Date range
-        if (state.txFromDate && tx.date < state.txFromDate) return false;
-        if (state.txToDate && tx.date > state.txToDate) return false;
-
+        if (appState.txTypeFilter !== 'all' && tx.type !== appState.txTypeFilter) return false;
+        if (appState.txFromDate && tx.date < appState.txFromDate) return false;
+        if (appState.txToDate && tx.date > appState.txToDate) return false;
         return true;
       });
 
-      // Sort
-      if (state.txSortAsc) {
+      if (appState.txSortAsc) {
         displayTx.sort((a, b) => a.serialNo - b.serialNo);
       } else {
         displayTx.sort((a, b) => b.serialNo - a.serialNo);
       }
 
-      // Table Render
       const tbody = document.getElementById('tx-table-body');
       const tableEmpty = document.getElementById('tx-empty-state');
 
-      if (displayTx.length === 0 && calcs.openingAmount === 0) {
-        tbody.innerHTML = "";
-        tableEmpty.style.display = "block";
+      if (displayTx.length === 0 && details.openingBalance === 0) {
+        tbody.innerHTML = '';
+        tableEmpty.style.display = 'block';
       } else {
-        tableEmpty.style.display = "none";
-        let rowsHtml = "";
+        tableEmpty.style.display = 'none';
+        let rowsHtml = '';
 
-        // If opening balance exists and we are in oldest-first sort, show opening balance row at top
-        const showOpeningRow = calcs.openingAmount > 0;
+        const showOpeningRow = details.openingBalance > 0;
         const openingRowHtml = showOpeningRow ? `
           <tr class="opening-balance-row">
             <td class="td-num">0</td>
             <td class="td-date">-</td>
             <td class="td-desc">
-              <strong>Opening Balance (${calcs.openingType === 'credit' ? 'Credit: Mujhe Mile The' : 'Debit: Unhone Liye The'})</strong>
+              <strong>Opening Balance (${details.openingBalanceType === 'credit' ? 'Credit: Mujhe Mile The' : 'Debit: Unhone Liye The'})</strong>
             </td>
-            <td style="text-align:right;" class="amount-cell ${calcs.openingType === 'debit' ? 'amount-debit' : ''}">
-              ${calcs.openingType === 'debit' ? formatINR(calcs.openingAmount) : '-'}
+            <td style="text-align:right;" class="amount-cell ${details.openingBalanceType === 'debit' ? 'amount-debit' : ''}">
+              ${details.openingBalanceType === 'debit' ? formatINR(details.openingBalance) : '-'}
             </td>
-            <td style="text-align:right;" class="amount-cell ${calcs.openingType === 'credit' ? 'amount-credit' : ''}">
-              ${calcs.openingType === 'credit' ? formatINR(calcs.openingAmount) : '-'}
+            <td style="text-align:right;" class="amount-cell ${details.openingBalanceType === 'credit' ? 'amount-credit' : ''}">
+              ${details.openingBalanceType === 'credit' ? formatINR(details.openingBalance) : '-'}
             </td>
             <td style="text-align:right;">
-              <span class="balance-pill ${calcs.openingContribution > 0 ? 'pill-green' : calcs.openingContribution < 0 ? 'pill-red' : 'pill-neutral'}">
-                ${calcs.openingContribution > 0 ? '🟢 ' : calcs.openingContribution < 0 ? '🔴 ' : ''}${formatINR(Math.abs(calcs.openingContribution))}
+              <span class="balance-pill ${details.openingContribution > 0 ? 'pill-green' : details.openingContribution < 0 ? 'pill-red' : 'pill-neutral'}">
+                ${details.openingContribution > 0 ? '🟢 ' : details.openingContribution < 0 ? '🔴 ' : ''}${formatINR(Math.abs(details.openingContribution))}
               </span>
             </td>
             <td></td>
           </tr>
         ` : '';
 
-        if (state.txSortAsc && showOpeningRow) {
-          rowsHtml += openingRowHtml;
-        }
+        if (appState.txSortAsc && showOpeningRow) rowsHtml += openingRowHtml;
 
         rowsHtml += displayTx.map(tx => {
-          const isCredit = tx.type === "credit";
-          let pillClass = "pill-neutral";
-          let pillPrefix = "";
+          const isCredit = tx.type === 'credit';
+          let pillClass = 'pill-neutral';
+          let pillPrefix = '';
           if (tx.runningBalance > 0) {
-            pillClass = "pill-green";
-            pillPrefix = "🟢 ";
+            pillClass = 'pill-green';
+            pillPrefix = '🟢 ';
           } else if (tx.runningBalance < 0) {
-            pillClass = "pill-red";
-            pillPrefix = "🔴 ";
+            pillClass = 'pill-red';
+            pillPrefix = '🔴 ';
           }
 
           return `
@@ -2183,12 +2009,13 @@
               <td class="td-date">${formatDateReadable(tx.date)}</td>
               <td class="td-desc">
                 ${tx.desc ? tx.desc : '<span style="color:var(--text-light); font-style:italic;">No description</span>'}
+                ${tx.paymentMode ? `<div class="payment-tag">${tx.paymentMode}</div>` : ''}
               </td>
               <td style="text-align:right;" class="amount-cell ${!isCredit ? 'amount-debit' : ''}">
-                ${!isCredit ? "- " + formatINR(tx.amount) : "-"}
+                ${!isCredit ? '- ' + formatINR(tx.amount) : '-'}
               </td>
               <td style="text-align:right;" class="amount-cell ${isCredit ? 'amount-credit' : ''}">
-                ${isCredit ? "+ " + formatINR(tx.amount) : "-"}
+                ${isCredit ? '+ ' + formatINR(tx.amount) : '-'}
               </td>
               <td style="text-align:right;">
                 <span class="balance-pill ${pillClass}">
@@ -2209,13 +2036,10 @@
           `;
         }).join('');
 
-        if (!state.txSortAsc && showOpeningRow) {
-          rowsHtml += openingRowHtml;
-        }
+        if (!appState.txSortAsc && showOpeningRow) rowsHtml += openingRowHtml;
 
         tbody.innerHTML = rowsHtml;
 
-        // Attach row action listeners
         tbody.querySelectorAll('.btn-edit-tx').forEach(btn => {
           btn.addEventListener('click', () => openEditTxModal(btn.getAttribute('data-tx-id')));
         });
@@ -2233,97 +2057,158 @@
       }
     }
 
-    /**
-     * ========================================================================
-     * 7. TRANSACTION HANDLERS (ADD, EDIT, DELETE)
-     * ========================================================================
-     */
-    let quickTxSelectedType = "credit";
+    // =========================================================================
+    // QUICK TRANSACTION CONTROLS
+    // =========================================================================
+    let quickTxSelectedType = 'credit';
     function setQuickTxType(type) {
       quickTxSelectedType = type;
       const creditBtn = document.getElementById('toggle-type-credit');
       const debitBtn = document.getElementById('toggle-type-debit');
-      if (type === "credit") {
-        creditBtn.className = "tx-type-btn active-credit";
-        debitBtn.className = "tx-type-btn";
+      if (type === 'credit') {
+        creditBtn.className = 'tx-type-btn active-credit';
+        debitBtn.className = 'tx-type-btn';
       } else {
-        creditBtn.className = "tx-type-btn";
-        debitBtn.className = "tx-type-btn active-debit";
+        creditBtn.className = 'tx-type-btn';
+        debitBtn.className = 'tx-type-btn active-debit';
       }
     }
 
     function handleAddQuickTx() {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
+      if (!appState.activeCustomerId) return;
 
       const amtInput = document.getElementById('tx-input-amount');
       const dateInput = document.getElementById('tx-input-date');
+      const modeInput = document.getElementById('tx-input-mode');
       const descInput = document.getElementById('tx-input-desc');
 
       const amount = parseFloat(amtInput.value);
       const date = dateInput.value;
       const desc = descInput.value.trim();
+      const mode = modeInput.value;
 
       if (!amount || amount <= 0) {
-        showToast("Kripya sahi rakam (amount > 0) dalein.", "error");
+        showToast('Kripya sahi rakam (amount > 0) dalein.', 'error');
         amtInput.focus();
         return;
       }
       if (!date) {
-        showToast("Tarikh (Date) zaroori hai.", "error");
+        showToast('Tarikh (Date) zaroori hai.', 'error');
         dateInput.focus();
         return;
       }
 
-      if (!Array.isArray(customer.transactions)) {
-        customer.transactions = [];
+      try {
+        DBMS.insertTransaction(appState.activeCustomerId, {
+          type: quickTxSelectedType,
+          amount: amount,
+          date: date,
+          desc: desc,
+          paymentMode: mode
+        });
+
+        amtInput.value = '';
+        descInput.value = '';
+        amtInput.focus();
+        showToast(`${quickTxSelectedType === 'credit' ? 'Credit (+)' : 'Debit (-)'} ₹${amount} hisab me jod diya gaya.`, 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
       }
-
-      const newTx = {
-        id: generateId(),
-        type: quickTxSelectedType,
-        amount: amount,
-        date: date,
-        desc: desc,
-        createdAt: Date.now()
-      };
-
-      customer.transactions.push(newTx);
-      saveData();
-      renderCustomerAccount();
-
-      // Reset form fields
-      amtInput.value = '';
-      descInput.value = '';
-      amtInput.focus();
-
-      const typeLabel = quickTxSelectedType === 'credit' ? 'Credit (+)' : 'Debit (-)';
-      showToast(`${typeLabel} ₹${amount} hisab me jod diya gaya.`, "success");
     }
 
-    let editTxSelectedType = "credit";
+    // Quick Chips Listeners
+    function setupQuickChips() {
+      document.querySelectorAll('[data-quick-amt]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const amt = chip.getAttribute('data-quick-amt');
+          const input = document.getElementById('tx-input-amount');
+          input.value = (parseFloat(input.value) || 0) + parseFloat(amt);
+          input.focus();
+        });
+      });
+
+      document.querySelectorAll('[data-quick-reason]').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const reason = chip.getAttribute('data-quick-reason');
+          const input = document.getElementById('tx-input-desc');
+          input.value = input.value ? input.value + ', ' + reason : reason;
+          input.focus();
+        });
+      });
+    }
+
+    // 1-Click Settle
+    function handleSettleAccount() {
+      if (!appState.activeCustomerId) return;
+      const details = DBMS.getCustomerDetails(appState.activeCustomerId);
+      if (!details || details.netBalance === 0) {
+        showToast('Hisab pehle se barabar hai (Balance ₹0).', 'normal');
+        return;
+      }
+
+      const confirmMsg = `Kya aap sach me ${details.name} ka bacha hua ${formatINR(Math.abs(details.netBalance))} hisab chukta (settle) karke ₹0 karna chahte hain?`;
+      if (confirm(confirmMsg)) {
+        try {
+          DBMS.settleCustomerAccount(appState.activeCustomerId, 'Cash', 'Hisab Chukta (Settlement)');
+          showToast('Hisab safaltapurvak chukta (Barabar ₹0) kar diya gaya!', 'success');
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      }
+    }
+
+    // WhatsApp Reminder
+    function handleWhatsAppReminder() {
+      if (!appState.activeCustomerId) return;
+      const details = DBMS.getCustomerDetails(appState.activeCustomerId);
+      if (!details) return;
+
+      let msg = `*Namaste ${details.name} ji,*%0A%0A`;
+      msg += `Aapka *Hisab Kitab (Ledger)* vivaran:%0A`;
+      if (details.netBalance > 0) {
+        msg += `🟢 *Mujhe aapko dene hain:* ${formatINR(details.netBalance)}%0A`;
+      } else if (details.netBalance < 0) {
+        msg += `🔴 *Aap se lene bache hain:* ${formatINR(Math.abs(details.netBalance))}%0A`;
+      } else {
+        msg += `⚖️ *Hisab Barabar hai:* ₹0%0A`;
+      }
+      msg += `🗓️ Tarikh: ${new Date().toLocaleDateString('en-IN')}%0A%0A`;
+      msg += `Kripya check kar lein. Dhanyawad!`;
+
+      const cleanPhone = (details.phone || '').replace(/[^0-9]/g, '');
+      const waUrl = cleanPhone 
+        ? `https://wa.me/91${cleanPhone}?text=${msg}`
+        : `https://wa.me/?text=${msg}`;
+
+      window.open(waUrl, '_blank');
+      showToast('WhatsApp reminder khol diya gaya.', 'success');
+    }
+
+    // =========================================================================
+    // EDIT TRANSACTION MODAL
+    // =========================================================================
+    let editTxSelectedType = 'credit';
     function setEditTxType(type) {
       editTxSelectedType = type;
       const creditBtn = document.getElementById('modal-edit-toggle-credit');
       const debitBtn = document.getElementById('modal-edit-toggle-debit');
-      if (type === "credit") {
-        creditBtn.className = "tx-type-btn active-credit";
-        debitBtn.className = "tx-type-btn";
+      if (type === 'credit') {
+        creditBtn.className = 'tx-type-btn active-credit';
+        debitBtn.className = 'tx-type-btn';
       } else {
-        creditBtn.className = "tx-type-btn";
-        debitBtn.className = "tx-type-btn active-debit";
+        creditBtn.className = 'tx-type-btn';
+        debitBtn.className = 'tx-type-btn active-debit';
       }
     }
 
     function openEditTxModal(txId) {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
-      const tx = (customer.transactions || []).find(t => t.id === txId);
+      const tx = DBMS.data.tables.transactions.find(t => t.id === txId);
       if (!tx) return;
 
       document.getElementById('edit-tx-id').value = tx.id;
       document.getElementById('modal-edit-amount').value = tx.amount;
       document.getElementById('modal-edit-date').value = tx.date;
+      document.getElementById('modal-edit-mode').value = tx.paymentMode || 'Cash';
       document.getElementById('modal-edit-desc').value = tx.desc || '';
       setEditTxType(tx.type);
 
@@ -2331,84 +2216,70 @@
     }
 
     function handleSaveEditTx() {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
       const txId = document.getElementById('edit-tx-id').value;
-      const tx = (customer.transactions || []).find(t => t.id === txId);
-      if (!tx) return;
-
       const amount = parseFloat(document.getElementById('modal-edit-amount').value);
       const date = document.getElementById('modal-edit-date').value;
+      const mode = document.getElementById('modal-edit-mode').value;
       const desc = document.getElementById('modal-edit-desc').value.trim();
 
-      if (!amount || amount <= 0) {
-        showToast("Rakam (amount > 0) zaroori hai.", "error");
-        return;
-      }
-      if (!date) {
-        showToast("Tarikh (Date) zaroori hai.", "error");
+      if (!amount || amount <= 0 || !date) {
+        showToast('Rakam aur tarikh zaroori hai.', 'error');
         return;
       }
 
-      tx.type = editTxSelectedType;
-      tx.amount = amount;
-      tx.date = date;
-      tx.desc = desc;
-
-      saveData();
-      closeModal('modal-edit-tx');
-      renderCustomerAccount();
-      showToast("Transaction safaltapurvak update ho gaya.", "success");
+      try {
+        DBMS.updateTransaction(txId, {
+          type: editTxSelectedType,
+          amount: amount,
+          date: date,
+          paymentMode: mode,
+          desc: desc
+        });
+        closeModal('modal-edit-tx');
+        showToast('Transaction update ho gaya.', 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
     }
 
     function confirmDeleteTransaction(txId) {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
-      const tx = (customer.transactions || []).find(t => t.id === txId);
+      const tx = DBMS.data.tables.transactions.find(t => t.id === txId);
       if (!tx) return;
 
-      const msg = `Kya aap sach me #${tx.date} ki ₹${tx.amount} wali entry delete karna chahte hain?`;
-      document.getElementById('delete-confirm-message').textContent = msg;
-
-      state.pendingDeleteAction = () => {
-        customer.transactions = customer.transactions.filter(t => t.id !== txId);
-        saveData();
-        renderCustomerAccount();
-        showToast("Entry delete kar di gayi.", "success");
+      document.getElementById('delete-confirm-message').textContent = `Kya aap sach me Tarikh ${tx.date} ki ₹${tx.amount} wali entry delete karna chahte hain?`;
+      appState.pendingDeleteAction = () => {
+        DBMS.deleteTransaction(txId);
+        showToast('Entry delete kar di gayi.', 'success');
       };
-
       openModal('modal-delete-confirm');
     }
 
-    /**
-     * ========================================================================
-     * 8. CUSTOMER MANAGEMENT (ADD, EDIT, DELETE)
-     * ========================================================================
-     */
+    // =========================================================================
+    // CUSTOMER MANAGEMENT
+    // =========================================================================
     function openAddCustomerModal() {
-      document.getElementById('modal-customer-title').textContent = "Naya Customer Jodein";
-      document.getElementById('cust-edit-id').value = "";
-      document.getElementById('modal-cust-name').value = "";
-      document.getElementById('modal-cust-phone').value = "";
-      document.getElementById('modal-cust-note').value = "";
-      document.getElementById('modal-cust-op-amount').value = "0";
-      document.getElementById('modal-cust-op-type').value = "credit";
+      document.getElementById('modal-customer-title').textContent = 'Naya Customer Jodein';
+      document.getElementById('cust-edit-id').value = '';
+      document.getElementById('modal-cust-name').value = '';
+      document.getElementById('modal-cust-phone').value = '';
+      document.getElementById('modal-cust-note').value = '';
+      document.getElementById('modal-cust-op-amount').value = '0';
+      document.getElementById('modal-cust-op-type').value = 'credit';
       openModal('modal-customer');
       setTimeout(() => document.getElementById('modal-cust-name').focus(), 150);
     }
 
     function openEditCustomerModal() {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
+      const cust = DBMS.getCustomerById(appState.activeCustomerId);
+      if (!cust) return;
 
-      document.getElementById('modal-customer-title').textContent = "Customer Details Me Sudhar";
-      document.getElementById('cust-edit-id').value = customer.id;
-      document.getElementById('modal-cust-name').value = customer.name;
-      document.getElementById('modal-cust-phone').value = customer.phone || "";
-      document.getElementById('modal-cust-note').value = customer.note || "";
-      document.getElementById('modal-cust-op-amount').value = customer.openingBalance || 0;
-      document.getElementById('modal-cust-op-type').value = customer.openingBalanceType || "credit";
-
+      document.getElementById('modal-customer-title').textContent = 'Customer Details Me Sudhar';
+      document.getElementById('cust-edit-id').value = cust.id;
+      document.getElementById('modal-cust-name').value = cust.name;
+      document.getElementById('modal-cust-phone').value = cust.phone || '';
+      document.getElementById('modal-cust-note').value = cust.note || '';
+      document.getElementById('modal-cust-op-amount').value = cust.openingBalance || 0;
+      document.getElementById('modal-cust-op-type').value = cust.openingBalanceType || 'credit';
       openModal('modal-customer');
     }
 
@@ -2421,291 +2292,181 @@
       const opType = document.getElementById('modal-cust-op-type').value;
 
       if (!name) {
-        showToast("Customer ka naam zaroori hai.", "error");
-        document.getElementById('modal-cust-name').focus();
+        showToast('Customer ka naam zaroori hai.', 'error');
         return;
       }
 
-      if (id) {
-        // Edit existing customer
-        const customer = state.customers.find(c => c.id === id);
-        if (customer) {
-          customer.name = name;
-          customer.phone = phone;
-          customer.note = note;
-          customer.openingBalance = opAmount;
-          customer.openingBalanceType = opType;
-          saveData();
+      try {
+        if (id) {
+          DBMS.updateCustomer(id, { name, phone, note, openingBalance: opAmount, openingBalanceType: opType });
           closeModal('modal-customer');
-          renderAll();
-          showToast("Customer details update ho gayi.", "success");
+          showToast('Customer update ho gaya.', 'success');
+        } else {
+          const newC = DBMS.insertCustomer({ name, phone, note, openingBalance: opAmount, openingBalanceType: opType });
+          closeModal('modal-customer');
+          showToast(`Customer "${name}" safaltapurvak joda gaya!`, 'success');
+          openCustomerAccount(newC.id);
         }
-      } else {
-        // New Customer
-        const newCustomer = {
-          id: generateId(),
-          name: name,
-          phone: phone,
-          note: note,
-          openingBalance: opAmount,
-          openingBalanceType: opType,
-          createdAt: Date.now(),
-          transactions: []
-        };
-        state.customers.unshift(newCustomer);
-        saveData();
-        closeModal('modal-customer');
-        renderDashboard();
-        showToast(`Naya customer "${name}" safaltapurvak joda gaya!`, "success");
-        // Open the customer's ledger immediately
-        openCustomerAccount(newCustomer.id);
+      } catch (err) {
+        showToast(err.message, 'error');
       }
     }
 
     function confirmDeleteCustomer() {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
+      const cust = DBMS.getCustomerById(appState.activeCustomerId);
+      if (!cust) return;
 
-      const msg = `Kya aap sach me customer "${customer.name}" aur unke sabhi hisab (${(customer.transactions || []).length} entries) ko delete karna chahte hain?`;
-      document.getElementById('delete-confirm-message').textContent = msg;
-
-      state.pendingDeleteAction = () => {
-        state.customers = state.customers.filter(c => c.id !== customer.id);
-        state.activeCustomerId = null;
-        saveData();
+      document.getElementById('delete-confirm-message').textContent = `Kya aap sach me customer "${cust.name}" aur unke sabhi hisab ko delete karna chahte hain?`;
+      appState.pendingDeleteAction = () => {
+        DBMS.deleteCustomer(cust.id);
+        appState.activeCustomerId = null;
         document.getElementById('view-customer').classList.remove('active');
         document.getElementById('view-dashboard').classList.add('active');
-        renderDashboard();
-        showToast(`Customer "${customer.name}" delete ho gaya.`, "success");
+        showToast(`Customer "${cust.name}" delete ho gaya.`, 'success');
       };
-
       openModal('modal-delete-confirm');
     }
 
-    /**
-     * ========================================================================
-     * 9. STATEMENT EXPORT: CSV & PRINT/PDF
-     * ========================================================================
-     */
-    function exportCustomerCSV() {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
-
-      const calcs = calculateCustomerBalances(customer);
-
-      let csv = "\uFEFF"; // UTF-8 BOM for Microsoft Excel
-      csv += `HISAB KITAB - STATEMENT OF ACCOUNT\n`;
-      csv += `Customer Name,${customer.name}\n`;
-      csv += `Phone,${customer.phone || '-'}\n`;
-      csv += `Notes,${customer.note || '-'}\n`;
-      csv += `Statement Date,${getTodayDateString()}\n`;
-      csv += `Opening Balance,${calcs.openingAmount} (${calcs.openingType})\n`;
-      csv += `Total Credit (Mujhe Mile),${calcs.totalCredit}\n`;
-      csv += `Total Debit (Unhone Liye),${calcs.totalDebit}\n`;
-      csv += `Net Balance,${calcs.netBalance > 0 ? 'Mujhe dene hain ' + calcs.netBalance : 'Mujhe lene hain ' + Math.abs(calcs.netBalance)}\n\n`;
-
-      csv += `Serial No,Date,Description,Debit (Unhone Liye),Credit (Mujhe Mile),Running Balance\n`;
-
-      // Opening balance row
-      if (calcs.openingAmount > 0) {
-        csv += `0,Opening,Opening Balance,${calcs.openingType === 'debit' ? calcs.openingAmount : 0},${calcs.openingType === 'credit' ? calcs.openingAmount : 0},${calcs.openingContribution}\n`;
-      }
-
-      calcs.processedTransactions.forEach(tx => {
-        const cleanDesc = `"${(tx.desc || '').replace(/"/g, '""')}"`;
-        const debitAmt = tx.type === 'debit' ? tx.amount : 0;
-        const creditAmt = tx.type === 'credit' ? tx.amount : 0;
-        csv += `${tx.serialNo},${tx.date},${cleanDesc},${debitAmt},${creditAmt},${tx.runningBalance}\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    // =========================================================================
+    // EXPORT & DBMS FILE HANDLING
+    // =========================================================================
+    function exportDBMSFile() {
+      const dataStr = DBMS.exportDatabase();
+      const blob = new Blob([dataStr], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      const cleanFileName = customer.name.replace(/[^a-zA-Z0-9_-]/g, "_");
-      link.setAttribute("href", url);
-      link.setAttribute("download", `hisab_${cleanFileName}_${getTodayDateString()}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast("CSV file download ho gayi.", "success");
-    }
-
-    function printCustomerStatement() {
-      const customer = state.customers.find(c => c.id === state.activeCustomerId);
-      if (!customer) return;
-
-      document.getElementById('print-date').textContent = `Date of Statement: ${new Date().toLocaleDateString('en-IN', { dateStyle: 'full' })}`;
-      window.print();
-    }
-
-    /**
-     * ========================================================================
-     * 10. BACKUP & RESTORE (JSON EXPORT & IMPORT)
-     * ========================================================================
-     */
-    function exportBackupJSON() {
-      const backupData = {
-        app: "Hisab Kitab (Offline Daily Ledger)",
-        version: "1.0",
-        exportedAt: new Date().toISOString(),
-        customersCount: state.customers.length,
-        customers: state.customers
-      };
-
-      const jsonStr = JSON.stringify(backupData, null, 2);
-      const blob = new Blob([jsonStr], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+      const link = document.createElement('a');
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
       link.href = url;
-      link.download = `hisab_kitab_backup_${timestamp}.json`;
+      link.download = `hisab_kitab_dbms_${timestamp}.json`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast("Poora Backup JSON file download ho gaya!", "success");
+      showToast('DBMS Database file download ho gayi!', 'success');
     }
 
-    function handleImportFileSelect(e) {
+    function handleImportFile(e) {
       const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
       reader.onload = function(evt) {
-        try {
-          const parsed = JSON.parse(evt.target.result);
-          if (!parsed.customers || !Array.isArray(parsed.customers)) {
-            throw new Error("Invalid format: 'customers' array missing.");
-          }
-
-          state.pendingImportData = parsed.customers;
-
-          const previewDiv = document.getElementById('import-stats-preview');
-          let totalTx = 0;
-          parsed.customers.forEach(c => {
-            totalTx += (c.transactions || []).length;
-          });
-
-          previewDiv.innerHTML = `
-            <strong>File Check:</strong> Valid Backup<br>
-            • Customers in Backup: <strong>${parsed.customers.length}</strong><br>
-            • Total Transactions: <strong>${totalTx}</strong><br>
-            • Backup Date: ${parsed.exportedAt ? new Date(parsed.exportedAt).toLocaleString() : 'N/A'}
-          `;
-
-          openModal('modal-import-confirm');
-        } catch (err) {
-          showToast("Invalid JSON file: " + err.message, "error");
+        const res = DBMS.importDatabase(evt.target.result, 'replace');
+        if (res.success) {
+          showToast('DBMS Database restore ho gaya!', 'success');
+        } else {
+          showToast('Import Error: ' + res.error, 'error');
         }
       };
       reader.readAsText(file);
-      // Reset input so same file can be selected again if needed
       e.target.value = '';
     }
 
-    function applyImport(mode) {
-      if (!state.pendingImportData) return;
+    function exportCustomerCSV() {
+      const details = DBMS.getCustomerDetails(appState.activeCustomerId);
+      if (!details) return;
 
-      if (mode === "replace") {
-        state.customers = state.pendingImportData;
-      } else if (mode === "merge") {
-        // Merge without duplicate IDs
-        const existingMap = new Map(state.customers.map(c => [c.id, c]));
-        state.pendingImportData.forEach(newCust => {
-          if (!existingMap.has(newCust.id)) {
-            state.customers.push(newCust);
-          } else {
-            // Merge transactions
-            const existingCust = existingMap.get(newCust.id);
-            const txMap = new Map((existingCust.transactions || []).map(t => [t.id, t]));
-            (newCust.transactions || []).forEach(t => {
-              if (!txMap.has(t.id)) {
-                existingCust.transactions.push(t);
-              }
-            });
-          }
-        });
+      let csv = '\uFEFF';
+      csv += `HISAB KITAB - STATEMENT OF ACCOUNT\n`;
+      csv += `Customer,${details.name}\nPhone,${details.phone || '-'}\nDate,${getTodayDateString()}\n`;
+      csv += `Net Balance,${details.netBalance > 0 ? 'Mujhe dene hain ' + details.netBalance : 'Mujhe lene hain ' + Math.abs(details.netBalance)}\n\n`;
+      csv += `No,Date,Description,Payment Mode,Debit,Credit,Running Balance\n`;
+
+      if (details.openingBalance > 0) {
+        csv += `0,Opening,Opening Balance,-,${details.openingBalanceType === 'debit' ? details.openingBalance : 0},${details.openingBalanceType === 'credit' ? details.openingBalance : 0},${details.openingContribution}\n`;
       }
 
-      saveData();
-      closeModal('modal-import-confirm');
-      state.pendingImportData = null;
-      renderAll();
-      showToast(`Data safaltapurvak ${mode === 'replace' ? 'restore (replace)' : 'merge'} ho gaya!`, "success");
+      details.processedTransactions.forEach(t => {
+        const cleanDesc = `"${(t.desc || '').replace(/"/g, '""')}"`;
+        const debit = t.type === 'debit' ? t.amount : 0;
+        const credit = t.type === 'credit' ? t.amount : 0;
+        csv += `${t.serialNo},${t.date},${cleanDesc},${t.paymentMode || 'Cash'},${debit},${credit},${t.runningBalance}\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `hisab_${details.name.replace(/[^a-zA-Z0-9_-]/g, '_')}_${getTodayDateString()}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('CSV download ho gayi.', 'success');
     }
 
-    /**
-     * ========================================================================
-     * 11. MODAL & THEME CONTROLS
-     * ========================================================================
-     */
-    function openModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) modal.classList.add('open');
+    // Modals
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('open');
+    }
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('open');
     }
 
-    function closeModal(modalId) {
-      const modal = document.getElementById(modalId);
-      if (modal) modal.classList.remove('open');
-    }
-
+    // Theme
     function initTheme() {
-      const savedTheme = localStorage.getItem(ACCOUNTING_CONFIG.themeKey) || "light";
-      setTheme(savedTheme);
+      const saved = localStorage.getItem('hisab_kitab_theme') || 'light';
+      setTheme(saved);
     }
-
-    function setTheme(theme) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem(ACCOUNTING_CONFIG.themeKey, theme);
+    function setTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('hisab_kitab_theme', t);
       const sun = document.getElementById('theme-icon-sun');
       const moon = document.getElementById('theme-icon-moon');
-      if (theme === "dark") {
-        sun.style.display = "none";
-        moon.style.display = "block";
+      if (t === 'dark') {
+        sun.style.display = 'none';
+        moon.style.display = 'block';
       } else {
-        sun.style.display = "block";
-        moon.style.display = "none";
+        sun.style.display = 'block';
+        moon.style.display = 'none';
       }
     }
 
-    /**
-     * ========================================================================
-     * 12. EVENT LISTENERS INITIALIZATION
-     * ========================================================================
-     */
+    // =========================================================================
+    // INITIALIZATION
+    // =========================================================================
     document.addEventListener('DOMContentLoaded', () => {
       initTheme();
-      loadData();
+      DBMS.init();
+      DBMS.onChange(() => renderAll());
       renderAll();
+      setupQuickChips();
 
-      // Navigation: Brand Click returns to Dashboard
+      // Brand Click
       document.getElementById('brand-logo').addEventListener('click', (e) => {
         e.preventDefault();
         document.getElementById('view-customer').classList.remove('active');
         document.getElementById('view-dashboard').classList.add('active');
-        state.activeCustomerId = null;
+        appState.activeCustomerId = null;
         renderDashboard();
       });
 
-      // Back Button from Customer Ledger
+      // Back Button
       document.getElementById('btn-back-to-dashboard').addEventListener('click', () => {
         document.getElementById('view-customer').classList.remove('active');
         document.getElementById('view-dashboard').classList.add('active');
-        state.activeCustomerId = null;
+        appState.activeCustomerId = null;
         renderDashboard();
       });
 
-      // Theme toggle button
+      // Theme toggle
       document.getElementById('theme-toggle').addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme') || "light";
-        setTheme(current === "dark" ? "light" : "dark");
+        const cur = document.documentElement.getAttribute('data-theme') || 'light';
+        setTheme(cur === 'dark' ? 'light' : 'dark');
       });
 
-      // Clear Sample Data Button
-      document.getElementById('btn-clear-sample').addEventListener('click', clearSampleData);
+      // Clear Sample Data
+      document.getElementById('btn-clear-sample').addEventListener('click', () => {
+        if (confirm('Kya aap sach me sample data saaf karna chahte hain?')) {
+          DBMS.clearAllData();
+          document.getElementById('sample-banner').style.display = 'none';
+          showToast('Sample data saaf kar diya gaya.', 'success');
+        }
+      });
 
       // Search Customers
       document.getElementById('search-customer-input').addEventListener('input', (e) => {
-        state.searchQuery = e.target.value;
+        appState.searchQuery = e.target.value;
         renderDashboard();
       });
 
@@ -2714,43 +2475,47 @@
         chip.addEventListener('click', () => {
           document.querySelectorAll('.filter-chips .chip').forEach(c => c.classList.remove('active'));
           chip.classList.add('active');
-          state.currentFilter = chip.getAttribute('data-filter');
+          appState.currentFilter = chip.getAttribute('data-filter');
           renderDashboard();
         });
       });
 
-      // Customer Modal triggers
+      // Customer Modal
       document.getElementById('btn-open-add-customer').addEventListener('click', openAddCustomerModal);
       document.getElementById('btn-empty-add-customer').addEventListener('click', openAddCustomerModal);
       document.getElementById('btn-edit-customer-profile').addEventListener('click', openEditCustomerModal);
       document.getElementById('btn-delete-customer').addEventListener('click', confirmDeleteCustomer);
       document.getElementById('form-customer').addEventListener('submit', handleSaveCustomer);
 
-      // Quick Add Transaction Form
-      document.getElementById('toggle-type-credit').addEventListener('click', () => setQuickTxType("credit"));
-      document.getElementById('toggle-type-debit').addEventListener('click', () => setQuickTxType("debit"));
+      // Quick Add Transaction
+      document.getElementById('toggle-type-credit').addEventListener('click', () => setQuickTxType('credit'));
+      document.getElementById('toggle-type-debit').addEventListener('click', () => setQuickTxType('debit'));
       document.getElementById('form-quick-add-tx').addEventListener('submit', handleAddQuickTx);
 
+      // Settle & WhatsApp Buttons
+      document.getElementById('btn-settle-balance').addEventListener('click', handleSettleAccount);
+      document.getElementById('btn-whatsapp-reminder').addEventListener('click', handleWhatsAppReminder);
+
       // Edit Transaction Modal
-      document.getElementById('modal-edit-toggle-credit').addEventListener('click', () => setEditTxType("credit"));
-      document.getElementById('modal-edit-toggle-debit').addEventListener('click', () => setEditTxType("debit"));
+      document.getElementById('modal-edit-toggle-credit').addEventListener('click', () => setEditTxType('credit'));
+      document.getElementById('modal-edit-toggle-debit').addEventListener('click', () => setEditTxType('debit'));
       document.getElementById('form-edit-tx').addEventListener('submit', handleSaveEditTx);
 
-      // Transaction Table Controls
+      // Table Toolbar
       document.getElementById('tx-table-search').addEventListener('input', (e) => {
-        state.txSearchQuery = e.target.value;
+        appState.txSearchQuery = e.target.value;
         renderCustomerAccount();
       });
       document.getElementById('tx-filter-type').addEventListener('change', (e) => {
-        state.txTypeFilter = e.target.value;
+        appState.txTypeFilter = e.target.value;
         renderCustomerAccount();
       });
       document.getElementById('tx-filter-from').addEventListener('change', (e) => {
-        state.txFromDate = e.target.value;
+        appState.txFromDate = e.target.value;
         renderCustomerAccount();
       });
       document.getElementById('tx-filter-to').addEventListener('change', (e) => {
-        state.txToDate = e.target.value;
+        appState.txToDate = e.target.value;
         renderCustomerAccount();
       });
       document.getElementById('btn-reset-tx-filters').addEventListener('click', () => {
@@ -2758,67 +2523,74 @@
         document.getElementById('tx-filter-type').value = 'all';
         document.getElementById('tx-filter-from').value = '';
         document.getElementById('tx-filter-to').value = '';
-        state.txSearchQuery = '';
-        state.txTypeFilter = 'all';
-        state.txFromDate = '';
-        state.txToDate = '';
+        appState.txSearchQuery = '';
+        appState.txTypeFilter = 'all';
+        appState.txFromDate = '';
+        appState.txToDate = '';
         renderCustomerAccount();
       });
       document.getElementById('btn-toggle-sort').addEventListener('click', () => {
-        state.txSortAsc = !state.txSortAsc;
-        const icon = document.getElementById('sort-icon');
-        const label = document.getElementById('sort-label');
-        if (state.txSortAsc) {
-          icon.textContent = "⬆️";
-          label.textContent = "Purana Pehle (Oldest First)";
-        } else {
-          icon.textContent = "⬇️";
-          label.textContent = "Naya Pehle (Newest First)";
-        }
+        appState.txSortAsc = !appState.txSortAsc;
+        document.getElementById('sort-icon').textContent = appState.txSortAsc ? '⬆️' : '⬇️';
+        document.getElementById('sort-label').textContent = appState.txSortAsc ? 'Purana Pehle' : 'Naya Pehle';
         renderCustomerAccount();
       });
 
-      // Export Actions
-      document.getElementById('btn-export-backup').addEventListener('click', exportBackupJSON);
+      // DBMS & Backup Actions
+      document.getElementById('btn-export-backup').addEventListener('click', exportDBMSFile);
       document.getElementById('btn-import-backup').addEventListener('click', () => {
         document.getElementById('import-file-input').click();
       });
-      document.getElementById('import-file-input').addEventListener('change', handleImportFileSelect);
-      document.getElementById('btn-import-replace').addEventListener('click', () => applyImport('replace'));
-      document.getElementById('btn-import-merge').addEventListener('click', () => applyImport('merge'));
+      document.getElementById('import-file-input').addEventListener('change', handleImportFile);
+
+      document.getElementById('btn-open-dbms-modal').addEventListener('click', () => {
+        openModal('modal-dbms-center');
+      });
+      document.getElementById('btn-modal-save-dbms-file').addEventListener('click', exportDBMSFile);
+      document.getElementById('btn-modal-load-dbms-file').addEventListener('click', () => {
+        document.getElementById('import-file-input').click();
+      });
+      document.getElementById('btn-modal-view-audit').addEventListener('click', () => {
+        const box = document.getElementById('audit-log-container');
+        if (box.style.display === 'none') {
+          box.style.display = 'block';
+          const logs = DBMS.data.tables.audit_logs || [];
+          box.innerHTML = logs.map(l => `<div>[${new Date(l.timestamp).toLocaleTimeString()}] <strong>${l.action}:</strong> ${l.details}</div>`).join('') || '<div>No audit logs recorded yet.</div>';
+        } else {
+          box.style.display = 'none';
+        }
+      });
 
       document.getElementById('btn-export-csv').addEventListener('click', exportCustomerCSV);
-      document.getElementById('btn-print-account').addEventListener('click', printCustomerStatement);
+      document.getElementById('btn-print-account').addEventListener('click', () => {
+        document.getElementById('print-date').textContent = `Statement Date: ${new Date().toLocaleDateString('en-IN', { dateStyle: 'full' })}`;
+        window.print();
+      });
 
-      // Delete confirmation modal action
+      // Confirm Delete
       document.getElementById('btn-confirm-delete-action').addEventListener('click', () => {
-        if (typeof state.pendingDeleteAction === 'function') {
-          state.pendingDeleteAction();
-          state.pendingDeleteAction = null;
+        if (typeof appState.pendingDeleteAction === 'function') {
+          appState.pendingDeleteAction();
+          appState.pendingDeleteAction = null;
         }
         closeModal('modal-delete-confirm');
       });
 
-      // Close modal on click backdrop or [data-close-modal] buttons
-      document.querySelectorAll('[data-close-modal]').forEach(btn => {
-        btn.addEventListener('click', (e) => {
+      // Close Modals
+      document.querySelectorAll('[data-close-modal]').forEach(b => {
+        b.addEventListener('click', (e) => {
           const backdrop = e.target.closest('.modal-backdrop');
           if (backdrop) backdrop.classList.remove('open');
         });
       });
-
-      document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
-        backdrop.addEventListener('click', (e) => {
-          if (e.target === backdrop) {
-            backdrop.classList.remove('open');
-          }
+      document.querySelectorAll('.modal-backdrop').forEach(m => {
+        m.addEventListener('click', (e) => {
+          if (e.target === m) m.classList.remove('open');
         });
       });
-
-      // Escape key closes modals
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          document.querySelectorAll('.modal-backdrop.open').forEach(modal => modal.classList.remove('open'));
+          document.querySelectorAll('.modal-backdrop.open').forEach(m => m.classList.remove('open'));
         }
       });
     });

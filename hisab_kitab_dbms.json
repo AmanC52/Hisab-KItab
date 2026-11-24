@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "dbName": "hisab_kitab_dbms",
+    "version": "2.0.0",
+    "createdAt": "2026-11-24T03:17:39.816Z",
+    "lastModified": "2026-11-24T03:17:39.817Z",
+    "totalCustomers": 3,
+    "totalTransactions": 8
+  },
+  "tables": {
+    "customers": [
+      {
+        "id": "cust_brother",
+        "name": "Bhai (Brother)",
+        "phone": "9876543210",
+        "note": "Opening credit ₹50k, he takes cash when needed",
+        "openingBalance": 50000,
+        "openingBalanceType": "credit",
+        "createdAt": 1794626259816,
+        "updatedAt": 1795490259816
+      },
+      {
+        "id": "cust_ramesh",
+        "name": "Ramesh Kirana Store",
+        "phone": "9812345678",
+        "note": "Ghar ka ration saman",
+        "openingBalance": 5000,
+        "openingBalanceType": "debit",
+        "createdAt": 1794194259816,
+        "updatedAt": 1795490259817
+      },
+      {
+        "id": "cust_pooja",
+        "name": "Pooja Sharma",
+        "phone": "9988776655",
+        "note": "Tailoring & clothes order",
+        "openingBalance": 0,
+        "openingBalanceType": "credit",
+        "createdAt": 1795317459817,
+        "updatedAt": 1795490259817
+      }
+    ],
+    "transactions": [
+      {
+        "id": "tx_b1",
+        "customerId": "cust_brother",
+        "type": "debit",
+        "amount": 50,
+        "date": "2026-11-19",
+        "desc": "Chai aur nashta",
+        "paymentMode": "Cash",
+        "createdAt": 1
+      },
+      {
+        "id": "tx_b2",
+        "customerId": "cust_brother",
+        "type": "debit",
+        "amount": 1000,
+        "date": "2026-11-21",
+        "desc": "Bike repair & service",
+        "paymentMode": "UPI",
+        "createdAt": 2
+      },
+      {
+        "id": "tx_b3",
+        "customerId": "cust_brother",
+        "type": "debit",
+        "amount": 2000,
+        "date": "2026-11-23",
+        "desc": "Grocery & petrol",
+        "paymentMode": "Cash",
+        "createdAt": 3
+      },
+      {
+        "id": "tx_b4",
+        "customerId": "cust_brother",
+        "type": "debit",
+        "amount": 1500,
+        "date": "2026-11-24",
+        "desc": "Mobile recharge & shopping",
+        "paymentMode": "Online",
+        "createdAt": 4
+      },
+      {
+        "id": "tx_r1",
+        "customerId": "cust_ramesh",
+        "type": "credit",
+        "amount": 3000,
+        "date": "2026-11-21",
+        "desc": "Cash jama kiya",
+        "paymentMode": "Cash",
+        "createdAt": 5
+      },
+      {
+        "id": "tx_r2",
+        "customerId": "cust_ramesh",
+        "type": "debit",
+        "amount": 1200,
+        "date": "2026-11-24",
+        "desc": "Atta, tel & masale",
+        "paymentMode": "Udhar",
+        "createdAt": 6
+      },
+      {
+        "id": "tx_p1",
+        "customerId": "cust_pooja",
+        "type": "credit",
+        "amount": 10000,
+        "date": "2026-11-19",
+        "desc": "Advance payment mila",
+        "paymentMode": "Bank Transfer",
+        "createdAt": 7
+      },
+      {
+        "id": "tx_p2",
+        "customerId": "cust_pooja",
+        "type": "debit",
+        "amount": 10000,
+        "date": "2026-11-24",
+        "desc": "Saman deliver kiya (Hisab Barabar)",
+        "paymentMode": "Cash",
+        "createdAt": 8
+      }
+    ],
+    "audit_logs": [
+      {
+        "id": "hk_mwu4jj3d_er38l9v",
+        "action": "DB_SEED",
+        "details": "Fresh database initialized with sample customer records",
+        "timestamp": "2026-11-24T03:17:39.817Z"
+      }
+    ],
+    "settings": {
+      "theme": "light",
+      "currency": "INR",
+      "currencySymbol": "₹",
+      "accounting": {
+        "creditSign": 1,
+        "debitSign": -1,
+        "positiveIsOwe": true
+      },
+      "autoBackupIntervalDays": 7,
+      "lastBackupDate": null
+    }
+  }
+}
